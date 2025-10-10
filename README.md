@@ -1,14 +1,76 @@
-# TradingAgents Enterprise Edition
+# TradingAgents Enhanced Edition
+
+**Based on the original architecture from [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents.git)**
 
 ## 🏛️ Multi-Agent Trading Analysis System
 
-TradingAgents is a sophisticated trading analysis system that uses multiple AI agents to analyze stocks and generate portfolio recommendations. The system combines technical analysis, fundamental analysis, sentiment analysis, and advanced portfolio optimization.
+TradingAgents Enhanced Edition is an advanced evolution of the original TradingAgents system, featuring comprehensive quantitative analysis, sophisticated portfolio optimization, and enterprise-grade reporting capabilities. Our system uses multiple AI agents to analyze stocks and generate institutional-quality investment recommendations.
+
+## 🚀 Enhanced Features & Capabilities
+
+Building upon the solid foundation of the original TradingAgents architecture, we've significantly expanded the system with:
+
+### 📊 **Advanced Quantitative Analysis**
+- **Multi-Scenario Portfolio Optimization**: Kelly Criterion, VaR/CVaR risk metrics, and 6 distinct optimization scenarios
+- **Mathematical Modeling**: GARCH volatility forecasting, factor analysis, and statistical predictions
+- **Risk Management**: Comprehensive risk assessment with multiple risk tolerance profiles (Conservative, Moderate, Aggressive)
+- **Performance Metrics**: Sharpe ratio, Sortino ratio, maximum drawdown, and beta calculations
+
+### 📈 **Comprehensive Reporting System**
+- **Professional Reports**: Generate both Markdown (.md) and Word (.docx) documents with embedded charts
+- **Multi-Panel Visualizations**: Technical analysis dashboards with 10+ indicators and chart patterns
+- **Structured Data Export**: 6 different CSV files for each analysis (technical, fundamental, risk, optimization scenarios)
+- **Institutional-Grade Documentation**: Reports suitable for investment committees and regulatory compliance
+
+### 🎯 **Multi-Stock Portfolio Management**
+- **Portfolio-Level Analysis**: Cross-stock correlation analysis and sector diversification
+- **Automated Allocation**: AI-powered position sizing with mathematical backing
+- **Comparative Analytics**: Side-by-side stock analysis with ranking systems
+- **Aggregated Risk Assessment**: Portfolio-wide risk metrics and stress testing
+
+### 🤖 **Enhanced AI Agent Architecture**
+- **Specialized Analysts**: Market, Fundamental, News, Social Media, and Quantitative agents
+- **Investment Committee Simulation**: Bull/Bear researchers with structured debate processes
+- **Risk Committee**: Multiple risk assessment agents with different perspectives
+- **Enterprise Strategy**: Institutional-level strategic analysis and decision-making
+
+## 🔧 **Current Development Status**
+
+⚠️ **This project is actively under development and continuous optimization**
+
+### 🛠️ **In Progress**
+- **WatsonX Integration**: Currently developing comprehensive IBM WatsonX.ai LLM support with langchain-ibm compatibility
+- **Advanced Portfolio Reporting**: Upgrading portfolio analysis from Markdown to comprehensive multi-format reports (PDF, Excel, Interactive dashboards)
+- **Real-time Data Integration**: Enhanced market data feeds and streaming analytics
+- **Performance Optimization**: Improving processing speed and memory efficiency
+
+### 📝 **Current Limitations**
+- Portfolio analysis currently generates Markdown reports (upgrading to comprehensive multi-format output)
+- Some advanced features require additional API keys and configuration
+- WatsonX integration is in beta testing phase
+
+### 🎯 **Upcoming Features**
+- **Multi-LLM Support**: OpenAI GPT-4, IBM WatsonX, Claude, and local models
+- **Interactive Dashboards**: Web-based portfolio monitoring and analysis
+- **Backtesting Engine**: Historical performance validation and strategy optimization  
+- **API Integration**: RESTful API for external system integration
+- **Mobile Compatibility**: Responsive design for mobile and tablet access
+
+## 🔬 **Technical Innovation**
+
+This enhanced version represents a significant advancement in AI-powered financial analysis:
+- **Mathematical Rigor**: Integration of modern portfolio theory with AI decision-making
+- **Institutional Quality**: Reports and analysis suitable for professional investment management
+- **Scalable Architecture**: Designed to handle multiple stocks and complex portfolio strategies
+- **Extensible Framework**: Modular design allows easy addition of new analysis methods and data sources
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Python 3.8+
-- OpenAI API Key
+- **LLM API Keys** (choose one or both):
+  - OpenAI API Key (GPT-4, currently primary support)
+  - IBM WatsonX API Key (🚧 **In Development** - Enhanced support coming soon)
 - UV package manager (recommended)
 
 ### Getting started
@@ -168,12 +230,17 @@ current_date = "2025-10-09"
 
 ### Environment Variables
 ```bash
-# Required
+# LLM Configuration (choose one)
 export OPENAI_API_KEY="your-openai-api-key"
 
-# Optional
+# OR - WatsonX Configuration (🚧 In Development)
+export WATSONX_API_KEY="your-watsonx-api-key" 
+export WATSONX_PROJECT_ID="your-watsonx-project-id"
+
+# Optional Data Sources
 export NEWS_API_KEY="your-news-api-key"
 export SOCIAL_API_KEY="your-social-api-key"
+export SIMFIN_API_KEY="your-simfin-api-key"  # For fundamental data
 ```
 
 ## 📊 Output Files
@@ -272,6 +339,66 @@ For issues and questions:
 3. Ensure all dependencies are properly installed
 4. Verify API keys are correctly set
 
+## 🛣️ Development Roadmap
+
+### 🎯 **Phase 1: WatsonX Integration (Current Priority)**
+- [ ] Complete IBM WatsonX.ai LLM integration with langchain-ibm
+- [ ] Tool calling and function support for WatsonX models
+- [ ] Performance optimization for enterprise-scale analysis
+- [ ] Comprehensive testing and validation
+
+### 🎯 **Phase 2: Enhanced Portfolio Management**
+- [ ] Upgrade portfolio reports to interactive dashboards
+- [ ] PDF and Excel export capabilities
+- [ ] Real-time portfolio monitoring
+- [ ] Advanced risk visualization
+
+### 🎯 **Phase 3: Multi-LLM Ecosystem**
+- [ ] Claude AI integration
+- [ ] Local model support (Llama, Mistral)
+- [ ] Model performance comparison
+- [ ] Intelligent model selection based on analysis type
+
+### 🎯 **Phase 4: Enterprise Features**
+- [ ] RESTful API development
+- [ ] Web interface and mobile support
+- [ ] Backtesting and historical validation
+- [ ] Regulatory compliance reporting
+
+## 🤝 Contributing
+
+We welcome contributions to the TradingAgents Enhanced Edition! This project is actively being developed with a focus on:
+
+### 🔥 **High Priority Areas**
+- **WatsonX Integration**: Help us complete the IBM WatsonX.ai integration
+- **Portfolio Visualization**: Enhanced charting and dashboard development
+- **Documentation**: Improve user guides and technical documentation
+- **Testing**: Expand test coverage and edge case handling
+
+### 💡 **How to Contribute**
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes and test thoroughly
+4. Commit your changes (`git commit -m 'Add amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
+
+### 🧪 **Development Focus**
+Our current development priorities align with creating a robust, enterprise-grade trading analysis platform that supports multiple LLM providers while maintaining the highest standards of financial analysis accuracy and institutional reporting quality.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Based on the original [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents.git) architecture
+- IBM WatsonX.ai team for LLM integration support
+- OpenAI for GPT-4 API access
+- The open-source financial analysis community
+
 ---
 
-**TradingAgents Enterprise Edition** - Professional trading analysis powered by AI agents and advanced quantitative methods.
+**TradingAgents Enhanced Edition** - Next-generation AI-powered trading analysis with institutional-grade quantitative methods and multi-LLM support.
+
+*🚧 Active Development: WatsonX Integration in Progress | Portfolio Enhancement Underway | Community Contributions Welcome*
