@@ -48,7 +48,7 @@ def main():
     log_print("=" * 80)
     
     # Set API key
-    os.environ["OPENAI_API_KEY"] = "sk-ptWTer3PDDbija6h6e0161E16067437bA22fD47f18BcE11a"
+    os.environ["OPENAI_API_KEY"] = "set your key here"
     
     # Create enhanced enterprise config
     config = DEFAULT_CONFIG.copy()
@@ -90,11 +90,11 @@ def main():
     log_print("⚡ Enterprise Components Integrated Successfully...")
     
     # Get current date and tickers for analysis
-    current_date = "2025-10-09"  # Updated to actual current date
+    current_date = "2025-10-10"  
     
     # PORTFOLIO MODE: Analyze multiple stocks
-    portfolio_mode = True  # Disable portfolio mode for testing
-    portfolio_tickers = ["NVDA", "AAPL"]  # Single stock for testing
+    portfolio_mode = True  
+    portfolio_tickers = ["NVDA", "AAPL", "MSFT", "GOOGL", "TSLA"]  
     
     log_print(f"📅 ANALYSIS DATE: {current_date}")
     

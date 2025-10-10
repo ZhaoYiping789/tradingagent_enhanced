@@ -2,6 +2,45 @@
 
 **Based on the original architecture from [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents.git)**
 
+## 🎬 **Demo Video**
+
+[![TradingAgents Demo](https://img.youtube.com/vi/3vmgWtg3G60/0.jpg)](https://youtu.be/3vmgWtg3G60?feature=shared)
+
+Watch our comprehensive demo showcasing the multi-agent analysis workflow and portfolio optimization capabilities.
+
+## 🏗️ **System Architecture**
+
+### Overall System Architecture
+![Overall Architecture](docs/overall%20architecture.png)
+
+### User Workflow
+![User Workflow](docs/user%20workflow.png)
+
+### Individual Analyst Architectures
+
+#### Market Analyst Architecture
+![Market Analyst Architecture](docs/market%20analyst%20architecture.png)
+
+#### Fundamental Analyst Architecture
+![Fundamental Analyst Architecture](docs/fundamental%20analyst%20architecture.png)
+
+#### News Analyst Architecture
+![News Analyst Architecture](docs/news%20analyst%20architecture.png)
+
+#### Quantitative Analyst Architecture
+![Quantitative Analyst Architecture](docs/quantatative%20analyst%20architecture.png)
+
+#### Portfolio Analyst Architecture
+![Portfolio Analyst Architecture](docs/portofolio%20anaylst%20architecture.png)
+
+### Portfolio System Architecture
+
+#### Multi-Scenario Optimization Architecture
+![Multi-Scenario Optimization Architecture](docs/multi-scenario%20optimization%20architecture.png)
+
+#### Multi-Stock Portfolio Generation System
+![Multi-Stock Portfolio Generation System](docs/multi-stock%20portofolio%20generation%20system.png)
+
 ## 👀 **Quick Results Preview**
 
 **Want to see what this system can do?** Check out our latest analysis examples:

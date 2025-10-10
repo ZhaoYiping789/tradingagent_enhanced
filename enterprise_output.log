@@ -28,7 +28,7 @@
 
 📊 [1/2] Analyzing NVDA...
 --------------------------------------------------------------------------------
-✅ NVDA Analysis Complete - Decision: HOLD
+✅ NVDA Analysis Complete - Decision: SELL
 
 📊 [2/2] Analyzing AAPL...
 --------------------------------------------------------------------------------
@@ -40,7 +40,7 @@
 ================================================================================
 ✅ Loaded 2 stock analyses
 📈 Fetching price data for optimization...
-✅ Returns matrix: (126, 2)
+✅ Returns matrix: (125, 2)
 🎯 Running multi-scenario portfolio optimization...
 ✅ Generated 5 portfolio scenarios
 📄 Generating portfolio report...
@@ -48,7 +48,7 @@
 
 ================================================================================
 ✅ ENTERPRISE ANALYSIS COMPLETE!
-⏱️  Total Analysis Time: 852.3 seconds
+⏱️  Total Analysis Time: 720.2 seconds
 ================================================================================
 
 📊 EXECUTIVE SUMMARY:

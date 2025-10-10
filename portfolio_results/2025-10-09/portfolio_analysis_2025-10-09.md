@@ -9,16 +9,16 @@
 
 | Ticker | Decision | Expected Return | Volatility | Sharpe Ratio | RSI | Technical Score | Sentiment Score |
 |--------|----------|-----------------|------------|--------------|-----|-----------------|-----------------|
-| **NVDA** | HOLD | 15.0% | 20.4% | 0.50 | 50 | 7.0/10 | 6.5/10 |
-| **AAPL** | HOLD | 12.0% | 17.2% | 0.50 | 50 | 7.0/10 | 6.2/10 |
+| **NVDA** | HOLD | 15.0% | 20.7% | 0.50 | 50 | 7.0/10 | 6.8/10 |
+| **AAPL** | HOLD | 12.0% | 25.0% | 0.50 | 50 | 7.0/10 | 3.8/10 |
 
 
 ### Risk Metrics Comparison
 
 | Ticker | VaR 95% | Max Drawdown | Current Price |
 |--------|---------|--------------|---------------|
-| **NVDA** | -3.00% | -25.0% | $167.00 |
-| **AAPL** | -3.00% | -18.0% | $252.91 |
+| **NVDA** | -3.00% | -25.0% | $180.00 |
+| **AAPL** | -3.00% | -18.0% | $250.00 |
 
 
 ### Individual Stock Analysis Summary
@@ -27,7 +27,7 @@
 - **Decision:** HOLD
 - **Technical Sentiment:** BULLISH (Score: 7.0/10)
 - **Expected Annual Return:** 15.0%
-- **Volatility:** 20.4% (Moderate risk)
+- **Volatility:** 20.7% (Moderate risk)
 - **Sharpe Ratio:** 0.50
 - **Key Insight:** Conservative profile
 
@@ -35,7 +35,7 @@
 - **Decision:** HOLD
 - **Technical Sentiment:** BULLISH (Score: 7.0/10)
 - **Expected Annual Return:** 12.0%
-- **Volatility:** 17.2% (Low risk)
+- **Volatility:** 25.0% (Moderate risk)
 - **Sharpe Ratio:** 0.50
 - **Key Insight:** Conservative profile
 
@@ -49,11 +49,11 @@ We tested 6 different portfolio construction strategies:
 
 | Strategy | Philosophy | Expected Return | Volatility | Sharpe Ratio | Top Holdings |
 |----------|------------|-----------------|------------|--------------|--------------|
-| **Maximum Sharpe Ratio** | Risk-Adjusted Return Maximization | 125.29% | 36.60% | 3.355 | NVDA (68.00%), AAPL (32.00%) |
-| **Minimum Variance** | Risk Minimization | 100.08% | 33.21% | 2.938 | AAPL (76.50%), NVDA (23.50%) |
-| **Risk Parity** | Equal Risk Contribution | 112.04% | 34.01% | 3.221 | AAPL (55.39%), NVDA (44.61%) |
-| **Maximum Diversification** | Diversification Focus | 100.08% | 33.21% | 2.938 | AAPL (76.50%), NVDA (23.50%) |
-| **Hierarchical Risk Parity** | Hierarchical Clustering | 112.04% | 34.01% | 3.221 | AAPL (55.39%), NVDA (44.61%) |
+| **Maximum Sharpe Ratio** | Risk-Adjusted Return Maximization | 103.47% | 26.13% | 3.865 | NVDA (68.00%), AAPL (32.00%) |
+| **Minimum Variance** | Risk Minimization | 82.83% | 23.35% | 3.441 | AAPL (65.88%), NVDA (34.12%) |
+| **Risk Parity** | Equal Risk Contribution | 89.15% | 23.62% | 3.668 | AAPL (55.50%), NVDA (44.50%) |
+| **Maximum Diversification** | Diversification Focus | 82.83% | 23.35% | 3.441 | AAPL (65.88%), NVDA (34.12%) |
+| **Hierarchical Risk Parity** | Hierarchical Clustering | 89.15% | 23.62% | 3.668 | AAPL (55.50%), NVDA (44.50%) |
 
 
 ### Detailed Scenario Analysis
@@ -61,9 +61,9 @@ We tested 6 different portfolio construction strategies:
 #### Maximum Sharpe Ratio
 - **Philosophy:** Risk-Adjusted Return Maximization
 - **Description:** Maximizes risk-adjusted returns (Sharpe ratio)
-- **Expected Return:** 125.29%
-- **Volatility:** 36.60%
-- **Sharpe Ratio:** 3.355
+- **Expected Return:** 103.47%
+- **Volatility:** 26.13%
+- **Sharpe Ratio:** 3.865
 
 **Allocation:**
 - NVDA: 68.00%
@@ -72,46 +72,46 @@ We tested 6 different portfolio construction strategies:
 #### Minimum Variance
 - **Philosophy:** Risk Minimization
 - **Description:** Minimizes portfolio volatility, focuses on stability
-- **Expected Return:** 100.08%
-- **Volatility:** 33.21%
-- **Sharpe Ratio:** 2.938
+- **Expected Return:** 82.83%
+- **Volatility:** 23.35%
+- **Sharpe Ratio:** 3.441
 
 **Allocation:**
-- AAPL: 76.50%
-- NVDA: 23.50%
+- AAPL: 65.88%
+- NVDA: 34.12%
 
 #### Risk Parity
 - **Philosophy:** Equal Risk Contribution
 - **Description:** Each asset contributes equally to portfolio risk
-- **Expected Return:** 112.04%
-- **Volatility:** 34.01%
-- **Sharpe Ratio:** 3.221
+- **Expected Return:** 89.15%
+- **Volatility:** 23.62%
+- **Sharpe Ratio:** 3.668
 
 **Allocation:**
-- AAPL: 55.39%
-- NVDA: 44.61%
+- AAPL: 55.50%
+- NVDA: 44.50%
 
 #### Maximum Diversification
 - **Philosophy:** Diversification Focus
 - **Description:** Maximizes diversification benefits
-- **Expected Return:** 100.08%
-- **Volatility:** 33.21%
-- **Sharpe Ratio:** 2.938
+- **Expected Return:** 82.83%
+- **Volatility:** 23.35%
+- **Sharpe Ratio:** 3.441
 
 **Allocation:**
-- AAPL: 76.50%
-- NVDA: 23.50%
+- AAPL: 65.88%
+- NVDA: 34.12%
 
 #### Hierarchical Risk Parity
 - **Philosophy:** Hierarchical Clustering
 - **Description:** Uses correlation clustering for robust allocation
-- **Expected Return:** 112.04%
-- **Volatility:** 34.01%
-- **Sharpe Ratio:** 3.221
+- **Expected Return:** 89.15%
+- **Volatility:** 23.62%
+- **Sharpe Ratio:** 3.668
 
 **Allocation:**
-- AAPL: 55.39%
-- NVDA: 44.61%
+- AAPL: 55.50%
+- NVDA: 44.50%
 
 ---
 
@@ -145,9 +145,9 @@ Choose based on your investment philosophy:
 
 | Metric | Min | Max | Average |
 |--------|-----|-----|---------|
-| Expected Return | 100.1% | 125.3% | 109.9% |
-| Volatility | 33.2% | 36.6% | 34.2% |
-| Sharpe Ratio | 2.94 | 3.35 | 3.13 |
+| Expected Return | 82.8% | 103.5% | 89.5% |
+| Volatility | 23.3% | 26.1% | 24.0% |
+| Sharpe Ratio | 3.44 | 3.86 | 3.62 |
 
 
 ---
@@ -175,10 +175,10 @@ Portfolio contains 2 stocks.
 | Algorithm | Philosophy | NVDA Weight | AAPL Weight | Key Insight |
 |-----------|------------|-------------|-------------|-------------|
 | Max Sharpe | Risk-Adjusted Return Maximization | 68.00% | 32.00% | MODERATE TILT |
-| Min Variance | Risk Minimization | 23.50% | 76.50% | HIGH CONCENTRATION |
-| Risk Parity | Equal Risk Contribution | 44.61% | 55.39% | BALANCED |
-| Max Diversification | Diversification Focus | 23.50% | 76.50% | HIGH CONCENTRATION |
-| Hrp | Hierarchical Clustering | 44.61% | 55.39% | BALANCED |
+| Min Variance | Risk Minimization | 34.12% | 65.88% | MODERATE TILT |
+| Risk Parity | Equal Risk Contribution | 44.50% | 55.50% | BALANCED |
+| Max Diversification | Diversification Focus | 34.12% | 65.88% | MODERATE TILT |
+| Hrp | Hierarchical Clustering | 44.50% | 55.50% | BALANCED |
 
 ### Raw Data Analysis Integration
 
@@ -187,17 +187,17 @@ Portfolio contains 2 stocks.
 | Metric | NVDA | AAPL | Comparison |
 |--------|------|------|------------|
 | Expected Return | HIGH 15.00% | MED 12.00% | NVDA ADVANTAGE |
-| Volatility | HIGH 20.35% | LOW 17.16% | AAPL LOWER RISK |
-| Current Price | MED $167.00 | MED $252.91 | SIMILAR |
+| Volatility | LOW 20.72% | HIGH 25.00% | NVDA LOWER RISK |
+| Current Price | MED $180.00 | MED $250.00 | SIMILAR |
 | Technical Score | MED 7.00/10 | MED 7.00/10 | SIMILAR |
 
 **SENTIMENT ANALYSIS RAW DATA:**
 
 | Metric | NVDA | AAPL | Analysis |
 |--------|------|------|---------|
-| Overall Sentiment | NEUTRAL (6.5/10) | NEUTRAL (6.2/10) | NVDA MORE POSITIVE |
-| Bullish Mentions | 4 mentions | 8 mentions | AAPL MORE BUZZ |
-| Bearish Mentions | 0 mentions | 7 mentions | AAPL MORE CONCERNS |
+| Overall Sentiment | BULLISH (6.8/10) | NEUTRAL (3.8/10) | NVDA MORE POSITIVE |
+| Bullish Mentions | 13 mentions | 7 mentions | NVDA MORE BUZZ |
+| Bearish Mentions | 0 mentions | 9 mentions | AAPL MORE CONCERNS |
 | Sentiment Strength | Weak | Weak | Confidence in sentiment signals |
 
 **FINAL RECOMMENDED ALLOCATION:**
@@ -206,16 +206,16 @@ Portfolio contains 2 stocks.
 - **AAPL**: 32.70%
 
 **Portfolio Manager Detailed Analysis:**
-The final allocation decision is based on synthesizing individual stock analysis, quantitative optimization results, and current market context. NVDA shows strong fundamental metrics with a high profit margin of 52.4% and ROE of 109.4%, indicating robust profitability and efficient use of equity. Despite its higher volatility (20.4%), NVDA's expected return of 15.0% and technical score of 7.0/10 suggest potential for growth. AAPL, while having a higher revenue ($408.6B) and net income ($99.3B), presents a lower profit margin (24.3%) and higher debt-to-equity ratio (154.49), indicating more leverage risk. Its expected return is lower at 12.0%, with similar technical and sentiment scores. The Max Sharpe scenario, which allocates 68% to NVDA and 32% to AAPL, aligns with the goal of maximizing risk-adjusted returns, given NVDA's higher expected return and manageable risk profile. The market context of moderate volatility in the tech sector supports a slightly aggressive stance, favoring NVDA's growth potential. The allocation balances risk and return, considering NVDA's higher volatility and AAPL's stability.
+The final allocation leans towards NVDA due to its superior fundamental strength and growth potential. NVDA's revenue of $165.2B and net income of $86.6B with a profit margin of 52.4% and ROE of 109.4% indicate strong financial health and operational efficiency. Despite a higher volatility of 20.7%, NVDA's expected return of 15.0% and bullish sentiment score of 6.8/10 suggest a favorable outlook. In contrast, AAPL, while having a larger revenue of $408.6B, shows a lower profit margin of 24.3% and a higher debt-to-equity ratio of 154.49, indicating higher financial leverage and potential risk. AAPL's expected return is lower at 12.0%, and its sentiment score is neutral at 3.8/10. The Max Sharpe scenario, which allocates 68% to NVDA and 32% to AAPL, aligns with the goal of maximizing risk-adjusted returns while maintaining a moderate risk profile. This allocation is slightly adjusted to 67.3% NVDA and 32.7% AAPL to account for the current market context of moderate volatility in the tech sector, ensuring a balanced approach that capitalizes on NVDA's growth potential while managing risk.
 
 **Confidence Level:** 8/10
 **Time Horizon:** 6-12 months
 **Preferred Optimization Approach:** Modified Maximum Sharpe with risk adjustments
 
 **Key Decision Factors:**
-- NVDA's strong fundamentals
-- AAPL's stability and revenue
-- Current tech market volatility
+- NVDA's strong fundamentals and growth potential
+- AAPL's higher financial leverage
+- Current moderate volatility in tech sector
 
 ---
 

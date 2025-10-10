@@ -1,7 +1,7 @@
 {
   "ticker": "NVDA",
   "export_date": "2025-10-09",
-  "timestamp": "2025-10-09T03:09:52.975993",
+  "timestamp": "2025-10-10T15:19:06.332787",
   "exported_files": {
     "financials": "results/NVDA/2025-10-09/csv_data/financial_metrics.csv",
     "risk": "results/NVDA/2025-10-09/csv_data/risk_metrics.csv",
