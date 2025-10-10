@@ -1,0 +1,82 @@
+🏛️ TRADINGAGENTS ENTERPRISE EDITION
+================================================================================
+🎯 Institutional-Grade Analysis with Advanced Trading Strategies
+================================================================================
+📊 Enterprise Analysts Selected: market, social, news, fundamentals, comprehensive_quantitative, portfolio, enterprise_strategy
+
+🔧 Initializing Enterprise TradingAgents System...
+⚡ Enterprise Components Integrated Successfully...
+📅 ANALYSIS DATE: 2025-10-09
+📊 PORTFOLIO MODE: Analyzing 2 stocks
+🎯 TARGET SECURITIES: NVDA, AAPL
+================================================================================
+🚀 INITIATING ENTERPRISE-LEVEL ANALYSIS...
+
+📋 ANALYSIS COMPONENTS:
+   🔍 Advanced Technical Analysis
+   📊 Multi-Source Sentiment Analysis
+   📰 Comprehensive News Intelligence
+   💰 Deep Fundamental Analysis
+   🤖 Machine Learning Forecasting
+   🏛️ Investment Committee Debate
+   ⚖️ Advanced Risk Assessment
+   🎯 Enterprise Strategy Generation
+   💼 Institutional Trading Plan
+   📊 Professional Report Generation
+
+⏳ Running Multi-Stock Analysis Pipeline...
+
+📊 [1/2] Analyzing NVDA...
+--------------------------------------------------------------------------------
+✅ NVDA Analysis Complete - Decision: HOLD
+
+📊 [2/2] Analyzing AAPL...
+--------------------------------------------------------------------------------
+✅ AAPL Analysis Complete - Decision: HOLD
+
+
+================================================================================
+📊 GENERATING PORTFOLIO ANALYSIS
+================================================================================
+✅ Loaded 2 stock analyses
+📈 Fetching price data for optimization...
+✅ Returns matrix: (126, 2)
+🎯 Running multi-scenario portfolio optimization...
+✅ Generated 5 portfolio scenarios
+📄 Generating portfolio report...
+✅ Portfolio report: portfolio_results\2025-10-09\portfolio_analysis_2025-10-09.md
+
+================================================================================
+✅ ENTERPRISE ANALYSIS COMPLETE!
+⏱️  Total Analysis Time: 852.3 seconds
+================================================================================
+
+📊 EXECUTIVE SUMMARY:
+   🎯 Final Decision: HOLD
+   💪 Confidence Level: Medium
+
+🔍 ANALYSIS COMPONENT STATUS:
+   ✅ Complete: Technical Analysis
+   ✅ Complete: Sentiment Analysis
+   ✅ Complete: News Analysis
+   ✅ Complete: Fundamental Analysis
+   ✅ Complete: Quantitative Forecasting
+   ❌ Missing: Enterprise Strategy
+   ❌ Missing: Institutional Trading Plan
+   ❌ Missing: Professional Report
+
+🏛️ INSTITUTIONAL DECISION PROCESS:
+   ✅ Investment Committee Debate: Complete
+   ✅ Risk Committee Assessment: Complete
+
+📁 OUTPUT LOCATIONS:
+   📊 Standard Reports: results/AAPL/2025-10-09/
+   📋 Detailed Logs: eval_results/AAPL/TradingAgentsStrategy_logs/
+
+================================================================================
+🎉 ENTERPRISE TRADINGAGENTS ANALYSIS COMPLETE!
+🎯 INSTITUTIONAL RECOMMENDATION: HOLD
+🏛️ Ready for Investment Committee Review
+================================================================================
+
+📊 Enterprise analysis complete. Review generated reports for detailed insights.

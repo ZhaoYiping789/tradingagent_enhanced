@@ -1,0 +1,13 @@
+{
+  "ticker": "AAPL",
+  "export_date": "2025-10-09",
+  "timestamp": "2025-10-09T03:16:55.145038",
+  "exported_files": {
+    "financials": "results/AAPL/2025-10-09/csv_data/financial_metrics.csv",
+    "risk": "results/AAPL/2025-10-09/csv_data/risk_metrics.csv",
+    "optimization": "results/AAPL/2025-10-09/csv_data/optimization_scenarios.csv",
+    "news": "results/AAPL/2025-10-09/csv_data/sentiment_analysis.csv",
+    "summary": "results/AAPL/2025-10-09/csv_data/summary_metrics.csv"
+  },
+  "file_count": 5
+}

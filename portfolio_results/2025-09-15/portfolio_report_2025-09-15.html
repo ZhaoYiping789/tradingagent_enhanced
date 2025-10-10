@@ -1,0 +1,489 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradingAgents 投资组合报告</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 3em;
+            font-weight: 300;
+        }
+        .investment-summary {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .investment-summary h2 {
+            margin: 0;
+            font-size: 2em;
+        }
+        .section {
+            padding: 40px;
+            border-bottom: 1px solid #eee;
+        }
+        .allocation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        .stock-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .stock-card:hover {
+            transform: translateY(-10px);
+        }
+        .stock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .stock-ticker {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        .allocation-amount {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        .recommendation {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .buy { background: #2ecc71; }
+        .hold { background: #f39c12; }
+        .sell { background: #e74c3c; }
+        .portfolio-summary {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .big-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: 500;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .risk-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .risk-low { background: #2ecc71; }
+        .risk-medium { background: #f39c12; }
+        .risk-high { background: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💼 投资组合分析报告</h1>
+            <p>基于AI多智能体分析的投资配置建议</p>
+            <p>2025-09-15</p>
+        </div>
+        
+        <div class="investment-summary">
+            <h2>💰 投资总额: $1,000,000</h2>
+            <p>基于风险调整评分的智能配置</p>
+        </div>
+        
+        <div class="section">
+            <h2>📊 投资组合配置概览</h2>
+            <div class="portfolio-summary">
+                <div class="summary-grid">
+
+                    <div class="summary-card">
+                        <div class="big-number">5</div>
+                        <div>投资股票数量</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="big-number">18.0%</div>
+                        <div>平均配置比例</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="big-number">10.0%</div>
+                        <div>现金储备</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="big-number">$100,000</div>
+                        <div>现金金额</div>
+                    </div>
+
+                </div>
+            </div>
+            
+            <div class="allocation-grid">
+
+                <div class="stock-card">
+                    <div class="stock-header">
+                        <span class="stock-ticker">AAPL</span>
+                        <span class="allocation-amount">$278,522</span>
+                    </div>
+                    <div style="text-align: center; margin: 15px 0;">
+                        <div style="font-size: 1.3em; font-weight: bold;">27.9%</div>
+                        <div style="opacity: 0.8;">投资比例</div>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <div class="metric-value">8/10</div>
+                            <div class="metric-label">技术评分</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">4/10</div>
+                            <div class="metric-label">情感评分</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">5/10</div>
+                            <div class="metric-label">基本面评分</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">Low</div>
+                            <div class="metric-label">风险等级</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 15px;">
+                        <span class="recommendation buy">BUY</span>
+                    </div>
+                </div>
+
+                <div class="stock-card">
+                    <div class="stock-header">
+                        <span class="stock-ticker">MSFT</span>
+                        <span class="allocation-amount">$101,848</span>
+                    </div>
+                    <div style="text-align: center; margin: 15px 0;">
+                        <div style="font-size: 1.3em; font-weight: bold;">10.2%</div>
+                        <div style="opacity: 0.8;">投资比例</div>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <div class="metric-value">4/10</div>
+                            <div class="metric-label">技术评分</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">5/10</div>
+                            <div class="metric-label">情感评分</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">5/10</div>
+                            <div class="metric-label">基本面评分</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">Low</div>
+                            <div class="metric-label">风险等级</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 15px;">
+                        <span class="recommendation hold">HOLD</span>
+                    </div>
+                </div>
+
+                <div class="stock-card">
+                    <div class="stock-header">
+                        <span class="stock-ticker">GOOGL</span>
+                        <span class="allocation-amount">$130,947</span>
+                    </div>
+                    <div style="text-align: center; margin: 15px 0;">
+                        <div style="font-size: 1.3em; font-weight: bold;">13.1%</div>
+                        <div style="opacity: 0.8;">投资比例</div>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <div class="metric-value">8/10</div>
+                            <div class="metric-label">技术评分</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">6/10</div>
+                            <div class="metric-label">情感评分</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">5/10</div>
+                            <div class="metric-label">基本面评分</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">Low</div>
+                            <div class="metric-label">风险等级</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 15px;">
+                        <span class="recommendation hold">HOLD</span>
+                    </div>
+                </div>
+
+                <div class="stock-card">
+                    <div class="stock-header">
+                        <span class="stock-ticker">NVDA</span>
+                        <span class="allocation-amount">$257,737</span>
+                    </div>
+                    <div style="text-align: center; margin: 15px 0;">
+                        <div style="font-size: 1.3em; font-weight: bold;">25.8%</div>
+                        <div style="opacity: 0.8;">投资比例</div>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <div class="metric-value">5/10</div>
+                            <div class="metric-label">技术评分</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">6/10</div>
+                            <div class="metric-label">情感评分</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">5/10</div>
+                            <div class="metric-label">基本面评分</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">Low</div>
+                            <div class="metric-label">风险等级</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 15px;">
+                        <span class="recommendation buy">BUY</span>
+                    </div>
+                </div>
+
+                <div class="stock-card">
+                    <div class="stock-header">
+                        <span class="stock-ticker">TSLA</span>
+                        <span class="allocation-amount">$130,947</span>
+                    </div>
+                    <div style="text-align: center; margin: 15px 0;">
+                        <div style="font-size: 1.3em; font-weight: bold;">13.1%</div>
+                        <div style="opacity: 0.8;">投资比例</div>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <div class="metric-value">8/10</div>
+                            <div class="metric-label">技术评分</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">6/10</div>
+                            <div class="metric-label">情感评分</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">5/10</div>
+                            <div class="metric-label">基本面评分</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">Low</div>
+                            <div class="metric-label">风险等级</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 15px;">
+                        <span class="recommendation hold">HOLD</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>📈 详细配置表格</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>股票代码</th>
+                        <th>投资金额</th>
+                        <th>配置比例</th>
+                        <th>投资建议</th>
+                        <th>综合评分</th>
+                        <th>风险等级</th>
+                        <th>行业分类</th>
+                        <th>市值分类</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td><strong>AAPL</strong></td>
+                        <td><strong>$278,522</strong></td>
+                        <td><strong>27.9%</strong></td>
+                        <td><span class="recommendation buy">BUY</span></td>
+                        <td>6.7/10</td>
+                        <td><span class="risk-indicator risk-low"></span>Low</td>
+                        <td>Technology</td>
+                        <td>Large Cap</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>MSFT</strong></td>
+                        <td><strong>$101,848</strong></td>
+                        <td><strong>10.2%</strong></td>
+                        <td><span class="recommendation hold">HOLD</span></td>
+                        <td>4.9/10</td>
+                        <td><span class="risk-indicator risk-low"></span>Low</td>
+                        <td>Technology</td>
+                        <td>Large Cap</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>GOOGL</strong></td>
+                        <td><strong>$130,947</strong></td>
+                        <td><strong>13.1%</strong></td>
+                        <td><span class="recommendation hold">HOLD</span></td>
+                        <td>6.3/10</td>
+                        <td><span class="risk-indicator risk-low"></span>Low</td>
+                        <td>Technology</td>
+                        <td>Large Cap</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>NVDA</strong></td>
+                        <td><strong>$257,737</strong></td>
+                        <td><strong>25.8%</strong></td>
+                        <td><span class="recommendation buy">BUY</span></td>
+                        <td>6.2/10</td>
+                        <td><span class="risk-indicator risk-low"></span>Low</td>
+                        <td>Technology</td>
+                        <td>Large Cap</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>TSLA</strong></td>
+                        <td><strong>$130,947</strong></td>
+                        <td><strong>13.1%</strong></td>
+                        <td><span class="recommendation hold">HOLD</span></td>
+                        <td>6.3/10</td>
+                        <td><span class="risk-indicator risk-low"></span>Low</td>
+                        <td>Consumer Discretionary</td>
+                        <td>Large Cap</td>
+                    </tr>
+
+                    <tr style="background: #f8f9fa; font-weight: bold;">
+                        <td>现金储备</td>
+                        <td>$100,000</td>
+                        <td>10.0%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>无风险</td>
+                        <td>现金</td>
+                        <td>-</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2>📋 投资建议总结</h2>
+            <div style="background: #e8f6f3; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h3>🎯 核心建议</h3>
+                <ul>
+                    <li><strong>多元化配置</strong>: 分散投资于5只不同股票</li>
+                    <li><strong>风险管理</strong>: 保留10.0%现金作为缓冲</li>
+                    <li><strong>定期重评</strong>: 建议每季度重新评估投资组合</li>
+                    <li><strong>止损策略</strong>: 为每只股票设置适当的止损位</li>
+                </ul>
+            </div>
+            
+            <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h3>⚠️ 风险提示</h3>
+                <ul>
+                    <li>本报告基于AI分析，仅供参考，不构成投资建议</li>
+                    <li>市场存在不可预测的风险，投资需谨慎</li>
+                    <li>建议根据个人风险承受能力调整配置</li>
+                    <li>定期监控市场变化，及时调整策略</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div style="background: #2c3e50; color: white; padding: 30px; text-align: center;">
+            <h3>📊 报告信息</h3>
+            <p>生成时间: 2025-09-15 | 分析系统: TradingAgents AI</p>
+            <p>总投资额: $1,000,000 | 分析股票: 5只</p>
+        </div>
+    </div>
+</body>
+</html>
