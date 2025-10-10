@@ -237,26 +237,201 @@ TradingAgents-main/
         └── TradingAgentsStrategy_logs/
 ```
 
-## ⚙️ Configuration
+## ⚙️ Detailed Configuration Guide
 
-### Main Configuration (main_enterprise.py)
+The system offers extensive customization options to tailor your analysis. Here's a comprehensive guide to all configurable parameters:
+
+### 🎯 **Core Analysis Configuration (main_enterprise.py)**
+
+#### **Analysis Mode & Targets**
 ```python
-# Analysis mode
-portfolio_mode = False  # Set to True for portfolio analysis
-portfolio_tickers = ["NVDA", "AAPL"]  # Stocks to analyze
+# Analysis scope
+portfolio_mode = False  # True: Multi-stock portfolio analysis | False: Single stock
+portfolio_tickers = ["NVDA", "AAPL", "MSFT", "GOOGL"]  # Stocks for portfolio mode
+company_of_interest = "NVDA"  # Single stock (when portfolio_mode=False)
+current_date = "2025-10-09"  # Analysis date (format: YYYY-MM-DD)
+```
 
-# Selected analysts
+#### **AI Agent Selection**
+Choose your analysis team from these specialized agents:
+```python
 selected_analysts = [
-    "market",           # Technical analysis
-    "fundamentals",     # Financial analysis  
-    "news",            # News sentiment
-    "social",          # Social sentiment
-    "comprehensive_quantitative",  # ML forecasting
-    "portfolio"        # Portfolio comparison
+    "market",                    # 📈 Technical Analysis: RSI, MACD, Bollinger Bands, Support/Resistance
+    "fundamentals",              # 💰 Financial Analysis: P/E, Revenue, Cash Flow, Balance Sheet
+    "news",                      # 📰 News Sentiment: Headlines, Impact Assessment, Market Moving Events
+    "social",                    # 🐦 Social Media: Reddit, Twitter sentiment, Retail investor mood
+    "comprehensive_quantitative", # 🔬 Advanced ML: GARCH models, Factor analysis, Statistical forecasting
+    "portfolio",                 # 📊 Portfolio Impact: Correlation analysis, Sector diversification
+    "enterprise_strategy"        # 🏛️ Strategic Analysis: Long-term positioning, Institutional perspective
 ]
 
-# Current date (update as needed)
-current_date = "2025-10-09"
+# Lightweight option (faster, fewer resources)
+selected_analysts = ["market", "fundamentals"]  # Quick analysis setup
+```
+
+### 🤖 **LLM Model Configuration**
+
+#### **Provider Selection**
+```python
+config = {
+    "llm_provider": "openai",     # Options: "openai", "anthropic", "google", "ollama"
+    "backend_url": "https://api.openai.com/v1",  # Custom endpoint URL
+}
+```
+
+#### **Model Specifications**
+```python
+# Performance vs Cost tradeoff
+config = {
+    # High-performance setup (recommended for institutional use)
+    "deep_think_llm": "gpt-4o",        # Complex analysis, strategic decisions
+    "quick_think_llm": "gpt-4o-mini",  # Quick operations, data processing
+    
+    # Alternative model configurations:
+    # "deep_think_llm": "gpt-4-turbo",     # OpenAI GPT-4 Turbo
+    # "deep_think_llm": "claude-3-opus",   # Anthropic Claude (set provider to "anthropic")
+    # "deep_think_llm": "gemini-pro",      # Google Gemini (set provider to "google")
+    
+    # Budget-friendly setup
+    # "deep_think_llm": "gpt-3.5-turbo",
+    # "quick_think_llm": "gpt-3.5-turbo",
+}
+```
+
+### 🔧 **Advanced System Configuration**
+
+#### **Analysis Depth & Quality**
+```python
+config = {
+    # Enterprise features
+    "enterprise_mode": True,                    # Enable institutional-grade features
+    "lightweight_quantitative": False,         # False: Full optimization algorithms
+    "use_comprehensive_quantitative": True,    # Enable advanced mathematical models
+    "include_optimization_results": True,      # Kelly Criterion, VaR/CVaR calculations
+    
+    # Debate & discussion quality
+    "max_debate_rounds": 2,          # 1-3: Bull/Bear analysis rounds (more = thorough)
+    "max_risk_discuss_rounds": 2,    # 1-3: Risk assessment depth
+    
+    # Processing limits
+    "max_recur_limit": 100,          # Maximum recursive analysis depth
+}
+```
+
+#### **Data Sources & Tools**
+```python
+config = {
+    "online_tools": True,            # True: Real-time data | False: Cached/sample data
+    
+    # Data directories (advanced users)
+    "results_dir": "./results",      # Analysis output location
+    "data_cache_dir": "./cache",     # Local data cache
+}
+```
+
+### 🌐 **Multi-LLM Provider Setup**
+
+#### **OpenAI Configuration**
+```python
+# Set environment variable:
+export OPENAI_API_KEY="your-openai-api-key"
+
+config = {
+    "llm_provider": "openai",
+    "backend_url": "https://api.openai.com/v1",
+    "deep_think_llm": "gpt-4o",
+    "quick_think_llm": "gpt-4o-mini"
+}
+```
+
+#### **Anthropic Claude Configuration**
+```python
+# Set environment variable:
+export ANTHROPIC_API_KEY="your-anthropic-api-key"
+
+config = {
+    "llm_provider": "anthropic", 
+    "deep_think_llm": "claude-3-5-sonnet-20241022",
+    "quick_think_llm": "claude-3-haiku-20240307"
+}
+```
+
+#### **Google Gemini Configuration**
+```python
+# Set environment variable:
+export GOOGLE_API_KEY="your-google-api-key"
+
+config = {
+    "llm_provider": "google",
+    "deep_think_llm": "gemini-1.5-pro",
+    "quick_think_llm": "gemini-1.5-flash"
+}
+```
+
+#### **WatsonX Configuration (🚧 In Development)**
+```python
+# Set environment variables:
+export WATSONX_API_KEY="your-watsonx-api-key"
+export WATSONX_PROJECT_ID="your-watsonx-project-id"
+
+config = {
+    "llm_provider": "watsonx",
+    "deep_think_llm": "meta-llama/llama-3-3-70b-instruct",
+    "quick_think_llm": "meta-llama/llama-3-1-8b-instruct"
+}
+```
+
+### 📊 **Pre-configured Analysis Scenarios**
+
+#### **Scenario 1: Quick Individual Investor Setup**
+```python
+# Fast, cost-effective personal analysis
+selected_analysts = ["market", "fundamentals"]
+config = {
+    "deep_think_llm": "gpt-4o-mini",
+    "quick_think_llm": "gpt-4o-mini",
+    "max_debate_rounds": 1,
+    "lightweight_quantitative": True
+}
+```
+
+#### **Scenario 2: Professional Advisor Setup**
+```python
+# Comprehensive client-ready reports
+selected_analysts = ["market", "fundamentals", "news", "social", "comprehensive_quantitative"]
+config = {
+    "deep_think_llm": "gpt-4o", 
+    "enterprise_mode": True,
+    "max_debate_rounds": 2,
+    "include_optimization_results": True
+}
+```
+
+#### **Scenario 3: Institutional Investment Committee**
+```python
+# Full enterprise analysis with all features
+selected_analysts = [
+    "market", "fundamentals", "news", "social", 
+    "comprehensive_quantitative", "portfolio", "enterprise_strategy"
+]
+config = {
+    "deep_think_llm": "gpt-4o",
+    "enterprise_mode": True,
+    "max_debate_rounds": 3,
+    "max_risk_discuss_rounds": 3,
+    "use_comprehensive_quantitative": True
+}
+```
+
+#### **Scenario 4: Research & Backtesting**
+```python
+# Historical analysis with detailed logging
+portfolio_mode = True
+portfolio_tickers = ["AAPL", "NVDA", "MSFT", "GOOGL", "TSLA"]
+config = {
+    "online_tools": False,  # Use historical data
+    "max_debug_logs": True
+}
 ```
 
 ### Environment Variables
