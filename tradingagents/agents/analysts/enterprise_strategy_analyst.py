@@ -61,17 +61,23 @@ def create_enterprise_strategy_analyst(llm, toolkit):
         current_date = state["trade_date"]
         ticker = state["company_of_interest"]
         
-        # Gather all analysis data
-        market_report = state.get("market_report", "")
-        sentiment_report = state.get("sentiment_report", "")
-        news_report = state.get("news_report", "")
-        fundamentals_report = state.get("fundamentals_report", "")
-        quantitative_report = state.get("quantitative_report", "")
-        comprehensive_quantitative_report = state.get("comprehensive_quantitative_report", "")
+        # Gather all analysis data and escape curly braces for LangChain template compatibility
+        def escape_braces(text):
+            """Escape curly braces to prevent LangChain template variable interpretation"""
+            if isinstance(text, str):
+                return text.replace("{", "{{").replace("}", "}}")
+            return text
+
+        market_report = escape_braces(state.get("market_report", ""))
+        sentiment_report = escape_braces(state.get("sentiment_report", ""))
+        news_report = escape_braces(state.get("news_report", ""))
+        fundamentals_report = escape_braces(state.get("fundamentals_report", ""))
+        quantitative_report = escape_braces(state.get("quantitative_report", ""))
+        comprehensive_quantitative_report = escape_braces(state.get("comprehensive_quantitative_report", ""))
         optimization_results = state.get("optimization_results", {})
         investment_debate_state = state.get("investment_debate_state", {})
         risk_debate_state = state.get("risk_debate_state", {})
-        trader_plan = state.get("trader_investment_plan", "")
+        trader_plan = escape_braces(state.get("trader_investment_plan", ""))
         
         # Get current market data for price calculations
         try:

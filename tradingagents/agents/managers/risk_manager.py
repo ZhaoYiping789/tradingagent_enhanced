@@ -4,16 +4,21 @@ import json
 
 def create_risk_manager(llm, memory):
     def risk_manager_node(state) -> dict:
+        # Escape curly braces to prevent ChatPromptTemplate variable interpretation
+        def escape_braces(text):
+            if isinstance(text, str):
+                return text.replace("{", "{{").replace("}", "}}")
+            return text
 
         company_name = state["company_of_interest"]
 
         history = state["risk_debate_state"]["history"]
         risk_debate_state = state["risk_debate_state"]
-        market_research_report = state["market_report"]
-        news_report = state["news_report"]
-        fundamentals_report = state["news_report"]
-        sentiment_report = state["sentiment_report"]
-        trader_plan = state["investment_plan"]
+        market_research_report = escape_braces(state["market_report"])
+        news_report = escape_braces(state["news_report"])
+        fundamentals_report = escape_braces(state["news_report"])
+        sentiment_report = escape_braces(state["sentiment_report"])
+        trader_plan = escape_braces(state["investment_plan"])
 
         curr_situation = f"{market_research_report}\n\n{sentiment_report}\n\n{news_report}\n\n{fundamentals_report}"
         past_memories = memory.get_memories(curr_situation, n_matches=2)

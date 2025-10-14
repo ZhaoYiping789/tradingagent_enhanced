@@ -91,31 +91,37 @@ def create_enhanced_quantitative_document_generator(llm, toolkit):
     """Create enhanced document generator with full quantitative integration."""
     
     def enhanced_quantitative_document_generator_node(state):
+        # Escape curly braces to prevent ChatPromptTemplate variable interpretation
+        def escape_braces(text):
+            if isinstance(text, str):
+                return text.replace("{", "{{").replace("}", "}}")
+            return text
+
         current_date = state["trade_date"]
         ticker = state["company_of_interest"]
-        
+
         print(f"📊 Generating Enhanced Quantitative Report for {ticker}...")
-        
-        # Extract all analysis components
-        market_report = state.get("market_report", "No market analysis available")
-        sentiment_report = state.get("sentiment_report", "No sentiment analysis available")
-        news_report = state.get("news_report", "No news analysis available")
-        fundamentals_report = state.get("fundamentals_report", "No fundamental analysis available")
-        quantitative_report = state.get("quantitative_report", "No quantitative analysis available")
-        comprehensive_quantitative_report = state.get("comprehensive_quantitative_report", "")
+
+        # Extract all analysis components and escape them
+        market_report = escape_braces(state.get("market_report", "No market analysis available"))
+        sentiment_report = escape_braces(state.get("sentiment_report", "No sentiment analysis available"))
+        news_report = escape_braces(state.get("news_report", "No news analysis available"))
+        fundamentals_report = escape_braces(state.get("fundamentals_report", "No fundamental analysis available"))
+        quantitative_report = escape_braces(state.get("quantitative_report", "No quantitative analysis available"))
+        comprehensive_quantitative_report = escape_braces(state.get("comprehensive_quantitative_report", ""))
         
         # Extract optimization results if available
         optimization_results = state.get("optimization_results", {})
         
-        # Extract debate results
-        bull_analysis = state.get("investment_debate_state", {}).get("bull_researcher_analysis", "No bull analysis")
-        bear_analysis = state.get("investment_debate_state", {}).get("bear_researcher_analysis", "No bear analysis")
-        research_decision = state.get("investment_debate_state", {}).get("judge_decision", "No research decision")
-        
-        # Extract trading and risk analysis
-        trader_plan = state.get("trader_decision", "No trading plan available")
-        risk_analysis = state.get("risk_debate_state", {}).get("judge_decision", "No risk analysis")
-        final_decision = state.get("final_decision", "No final decision")
+        # Extract debate results and escape them
+        bull_analysis = escape_braces(state.get("investment_debate_state", {}).get("bull_researcher_analysis", "No bull analysis"))
+        bear_analysis = escape_braces(state.get("investment_debate_state", {}).get("bear_researcher_analysis", "No bear analysis"))
+        research_decision = escape_braces(state.get("investment_debate_state", {}).get("judge_decision", "No research decision"))
+
+        # Extract trading and risk analysis and escape them
+        trader_plan = escape_braces(state.get("trader_decision", "No trading plan available"))
+        risk_analysis = escape_braces(state.get("risk_debate_state", {}).get("judge_decision", "No risk analysis"))
+        final_decision = escape_braces(state.get("final_decision", "No final decision"))
         
         # Extract news URLs
         news_urls = extract_news_urls_from_state(state)
@@ -349,44 +355,135 @@ MANDATORY: Use these ACTUAL levels in your trading plan. For example:
 - Take-profit near resistance: ${chart_metrics.get('resistance_20d', 0):.2f}
 """
 
-        # Create comprehensive prompt with all data
-        prompt = ChatPromptTemplate.from_messages([
-            ("system", system_message),
-            ("human", f"""Create a comprehensive quantitative analysis report for {ticker} on {current_date}.
+        # SPLIT GENERATION: Generate report in 7 separate sections to avoid token limits
+        print(f"📊 Generating Enhanced Report in 7 Sections...")
+        sections = []
 
+        # SECTION 1: FUNDAMENTAL ANALYSIS
+        print("   [1/7] Fundamental Analysis...")
+        prompt1 = ChatPromptTemplate.from_messages([
+            ("system", "You are an elite institutional analyst creating a FUNDAMENTAL ANALYSIS section."),
+            ("human", f"""Create SECTION 1: FUNDAMENTAL ANALYSIS for {ticker} on {current_date}.
+
+**FUNDAMENTAL DATA:**
+{fundamentals_report}
+
+**INSTRUCTIONS:**
+1. Create a professional table with columns: Metric | Data | Insights & Analysis
+2. Include revenue growth, profit margins, ROE, ROIC, debt ratios, liquidity ratios
+3. Provide comprehensive analysis explaining what each metric means
+4. Add a company overview and strategic analysis
+5. Use markdown format with proper headers
+6. Start with: ### SECTION 1: FUNDAMENTAL ANALYSIS
+
+Generate ONLY Section 1. Be comprehensive and detailed.""")
+        ])
+        section1 = (prompt1 | llm).invoke({}).content
+        sections.append(section1)
+
+        # SECTION 2: SENTIMENT & NEWS ANALYSIS
+        print("   [2/7] Sentiment & News Analysis...")
+        prompt2 = ChatPromptTemplate.from_messages([
+            ("system", "You are an elite institutional analyst creating a SENTIMENT & NEWS ANALYSIS section."),
+            ("human", f"""Create SECTION 2: SENTIMENT & NEWS ANALYSIS for {ticker} on {current_date}.
+
+**SENTIMENT DATA:**
+{sentiment_report}
+
+**NEWS WITH URLS:**
+{format_news_with_urls(news_urls)}
+
+**INSTRUCTIONS:**
+1. List all news headlines with clickable URLs
+2. Provide impact analysis for each (price impact, probability, risk-adjusted impact)
+3. Calculate overall sentiment score (Bullish/Bearish %)
+4. Analyze market reaction and implications
+5. Start with: ### SECTION 2: SENTIMENT & NEWS ANALYSIS
+
+Generate ONLY Section 2. Include ALL news items with detailed impact analysis.""")
+        ])
+        section2 = (prompt2 | llm).invoke({}).content
+        sections.append(section2)
+
+        # SECTION 3: TECHNICAL ANALYSIS
+        print("   [3/7] Technical Analysis...")
+        prompt3 = ChatPromptTemplate.from_messages([
+            ("system", "You are an elite institutional analyst creating a TECHNICAL ANALYSIS section."),
+            ("human", f"""Create SECTION 3: TECHNICAL ANALYSIS for {ticker} on {current_date}.
+
+**TECHNICAL LEVELS:**
 {technical_levels_text}
-
-**QUANTITATIVE METRICS:**
-{format_quantitative_metrics(quant_metrics)}
-
-**OPTIMIZATION RESULTS (MUST DISPLAY IN REPORT):**
-{format_optimization_results(optimization_results)}
-
-CRITICAL: The above optimization scenarios MUST appear in your report in Section 5 before the Investment Recommendation. 
-Display the table showing all 6 scenarios, then analyze which scenario best fits the current conditions based on fundamentals, technicals, and sentiment.
 
 **MARKET/TECHNICAL ANALYSIS:**
 {market_report}
 
-**SENTIMENT ANALYSIS:**
-{sentiment_report}
-
-**NEWS ANALYSIS WITH URLS:**
-{format_news_with_urls(news_urls)}
-
-**FUNDAMENTAL ANALYSIS:**
-{fundamentals_report}
-
 **QUANTITATIVE ANALYSIS:**
 {quantitative_report}
 
-**COMPREHENSIVE QUANTITATIVE ANALYSIS:**
-{comprehensive_quantitative_report}
+**CRITICAL INSTRUCTIONS:**
+1. Create a COMPLETE table with: Indicator | Current Value | Signal | Analysis
+2. The table MUST include AT LEAST these indicators:
+   - SMA 20, SMA 50, SMA 200 (moving averages)
+   - **MACD, MACD Signal, MACD Histogram** (CRITICAL - DO NOT SKIP)
+   - RSI (momentum)
+   - Bollinger Bands (upper, middle, lower)
+   - ATR (volatility)
+   - Support and Resistance levels
+3. Use signals: 🟢 (bullish), 🔴 (bearish), 🟡 (neutral)
+4. Extract MACD values from the market/technical analysis provided
+5. Add comprehensive chart interpretation
+6. Include GARCH volatility forecasts and statistical predictions
+7. Mention visualization dashboard
+8. Start with: ### SECTION 3: TECHNICAL ANALYSIS
 
-**INVESTMENT DEBATE:**
-Bull Case: {bull_analysis}
-Bear Case: {bear_analysis}
-Research Decision: {research_decision}
+**MANDATORY**: Your table MUST have at least 12 rows covering all indicators above, especially MACD indicators.
+
+Generate ONLY Section 3 with ALL technical indicators.""")
+        ])
+        section3 = (prompt3 | llm).invoke({}).content
+        sections.append(section3)
+
+        # SECTION 4: BULL & BEAR CASE ANALYSIS
+        print("   [4/7] Bull & Bear Case Analysis...")
+        prompt4 = ChatPromptTemplate.from_messages([
+            ("system", "You are an elite institutional analyst creating a BULL & BEAR CASE ANALYSIS section."),
+            ("human", f"""Create SECTION 4: BULL & BEAR CASE ANALYSIS for {ticker} on {current_date}.
+
+**BULL CASE:**
+{bull_analysis}
+
+**BEAR CASE:**
+{bear_analysis}
+
+**RESEARCH DECISION:**
+{research_decision}
+
+**INSTRUCTIONS:**
+1. Create bull case table: Factor | Quantitative Estimate | Comprehensive Rationale
+2. Create bear case table with same structure
+3. Analyze probability and impact of each scenario
+4. Synthesize into balanced assessment
+5. Start with: ## SECTION 4: BULL & BEAR CASE ANALYSIS
+
+Generate ONLY Section 4 with detailed bull/bear analysis.""")
+        ])
+        section4 = (prompt4 | llm).invoke({}).content
+        sections.append(section4)
+
+        # SECTION 5: COMPREHENSIVE TRADING STRATEGY (LONGEST)
+        print("   [5/7] Comprehensive Trading Strategy...")
+        prompt5 = ChatPromptTemplate.from_messages([
+            ("system", "You are an elite institutional analyst creating a COMPREHENSIVE TRADING STRATEGY section. This should be the LONGEST and MOST DETAILED section."),
+            ("human", f"""Create SECTION 5: COMPREHENSIVE TRADING STRATEGY for {ticker} on {current_date}.
+
+**OPTIMIZATION RESULTS:**
+{format_optimization_results(optimization_results)}
+
+**QUANTITATIVE METRICS:**
+{format_quantitative_metrics(quant_metrics)}
+
+**TECHNICAL LEVELS:**
+{technical_levels_text}
 
 **TRADING PLAN:**
 {trader_plan}
@@ -397,66 +494,117 @@ Research Decision: {research_decision}
 **FINAL DECISION:**
 {final_decision}
 
-CRITICAL INSTRUCTIONS - FOLLOW EXACTLY:
+**CRITICAL INSTRUCTIONS - MUST FOLLOW:**
 
-1. **STRUCTURE**: Follow the 5-section structure EXACTLY as specified:
-   - Section 1: Fundamental Analysis
-   - Section 2: Sentiment & News Analysis
-   - Section 3: Technical Analysis
-   - Section 4: Bull & Bear Case Analysis
-   - Section 5: Comprehensive Trading Strategy
+1. **FIRST AND FOREMOST**: Display the complete OPTIMIZATION SCENARIOS TABLE showing all 6 scenarios:
 
-2. **TABLES**: Use tables for ALL data with "Insights & Analysis" columns
+   | Scenario | Risk Aversion (γ) | Optimal Weight | Expected Return | Volatility | Sharpe Ratio | VaR (95%) | CVaR (95%) |
+   |----------|------------------|----------------|-----------------|------------|--------------|-----------|------------|
+   | Risk-Averse Institutional | 50.0 | X% | XX% | XX% | X.XX | -X.XX% | -X.XX% |
+   | Balanced Institutional | 10.0 | X% | XX% | XX% | X.XX | -X.XX% | -X.XX% |
+   | Growth-Oriented | 2.0 | X% | XX% | XX% | X.XX | -X.XX% | -X.XX% |
+   | Volatility-Minimizing | γ_min | X% | XX% | XX% | X.XX | -X.XX% | -X.XX% |
+   | Return-Maximizing | γ_max | X% | XX% | XX% | X.XX | -X.XX% | -X.XX% |
+   | **Sharpe-Optimized (CONSENSUS)** | γ_opt | **X%** | **XX%** | **XX%** | **X.XX** | **-X.XX%** | **-X.XX%** |
 
-3. **SIGNALS**: Include 🟢🔴🟡 indicators for all technical metrics
+   **USE THE ACTUAL DATA FROM OPTIMIZATION RESULTS PROVIDED ABOVE**
 
-4. **NEWS**: Include ALL news items with clickable URLs and impact analysis
+2. Analyze which scenario fits current market conditions (fundamentals, sentiment, technicals)
 
-5. **RATIONALE**: Every trading recommendation must have COMPREHENSIVE DETAILED RATIONALE explaining:
-   - WHY this price level
-   - WHY this timing
-   - WHY this position size
-   - WHAT conditions support this decision
-   - HOW this fits into the overall strategy
+3. Investment recommendation: State BUY/HOLD/SELL with position size (reference the consensus/optimal weight from table)
 
-6. **DEPTH**: The trading strategy section (Section 5) should be the LONGEST and MOST DETAILED:
-   - Multiple paragraphs explaining each decision
-   - Connect to fundamental, technical, and sentiment analysis
-   - Provide specific scenario-based adjustments
-   - Include mathematical justification where applicable
+4. **Entry Strategy** (use ACTUAL technical levels):
+   - Primary entry: Near support ${technical_levels_text}
+   - Stop-loss: Calculated using ATR
+   - Reasoning based on technical setup
 
-7. **OPTIMIZATION RESULTS INTEGRATION**: 
-   - DISPLAY the optimization results prominently in the report
-   - REFERENCE the Kelly Criterion position sizing in your trading plan
-   - MENTION the GARCH volatility forecasts when discussing risk
-   - USE the VaR/CVaR metrics when setting stop-loss levels
-   - INCORPORATE the mathematical models as ONE input alongside fundamentals, technicals, and sentiment
-   - Show your work: "Based on Kelly Criterion suggesting X% and technical analysis showing Y, we recommend Z%"
+5. **Exit Strategy** (use ACTUAL resistance levels):
+   - Conservative target
+   - Moderate target
+   - Aggressive target
+   - All based on actual technical levels provided
 
-8. **INTEGRATION**: Synthesize ALL the data provided:
-   - Fundamental analysis insights
-   - Technical indicators and their meanings
-   - News sentiment and its implications  
-   - Bull/bear debates and their conclusions
-   - Risk assessments
-   - OPTIMIZATION MODEL OUTPUTS (Kelly, GARCH, VaR, etc.)
-   - Current market price and support/resistance levels
+6. **Risk Management Section** (MUST include):
+   | Risk Metric | Value | Analysis |
+   |-------------|-------|----------|
+   | VaR (95%) | From optimization table | Explanation |
+   | CVaR (95%) | From optimization table | Explanation |
+   | Stop-Loss | Price - (2 × ATR) | Specific calculation |
+   | Position Size | From Kelly Criterion/Optimization | Justification |
+   | Max Drawdown | From historical data | Interpretation |
 
-9. **RISK MANAGEMENT MUST BE PROMINENT**:
-   - Display a dedicated "Risk Management" subsection in Section 5 (Trading Strategy)
-   - Show VaR, CVaR, Max Drawdown, Sharpe Ratio, Sortino Ratio in a table
-   - Calculate stop-loss using: Price - (ATR × 2) and compare to support levels
-   - Display position limits based on Kelly Criterion and volatility
-   - Show risk budget as % of portfolio
+7. Execution timeline with specific weekly/monthly actions
 
-Create a report that shows the optimization results AND uses the CALCULATED TECHNICAL LEVELS (provided above) in the final trading strategy - not random numbers.""")
+8. Scenario-based adjustments (bull/bear/base cases) with specific position size changes
+
+9. **Position Sizing**: Reference Kelly Criterion and optimization consensus weight
+
+10. Start with: ## SECTION 5: COMPREHENSIVE TRADING STRATEGY
+
+**MANDATORY**: The optimization scenarios table MUST be the first thing after the section header. Do NOT skip it.
+
+Generate ONLY Section 5. Make it VERY DETAILED with the optimization table prominently displayed at the top.""")
         ])
+        section5 = (prompt5 | llm).invoke({}).content
+        sections.append(section5)
 
-        chain = prompt | llm
-        result = chain.invoke({})
-        
-        # Save the enhanced document
-        analysis_document = result.content
+        # SECTION 6: PORTFOLIO INTEGRATION
+        print("   [6/7] Portfolio Integration...")
+        prompt6 = ChatPromptTemplate.from_messages([
+            ("system", "You are an elite institutional analyst creating a PORTFOLIO INTEGRATION section."),
+            ("human", f"""Create SECTION 6: PORTFOLIO INTEGRATION for {ticker} on {current_date}.
+
+**COMPREHENSIVE QUANTITATIVE ANALYSIS:**
+{comprehensive_quantitative_report}
+
+**OPTIMIZATION RESULTS:**
+{format_optimization_results(optimization_results)}
+
+**INSTRUCTIONS:**
+1. Analyze how this position fits into a diversified portfolio
+2. Discuss correlation with market indices
+3. Position sizing relative to portfolio (reference Kelly Criterion)
+4. Risk contribution and diversification benefits
+5. Portfolio rebalancing considerations
+6. Start with: ## SECTION 6: PORTFOLIO INTEGRATION
+
+Generate ONLY Section 6 with portfolio-level analysis.""")
+        ])
+        section6 = (prompt6 | llm).invoke({}).content
+        sections.append(section6)
+
+        # SECTION 7: EXECUTIVE SUMMARY
+        print("   [7/7] Executive Summary...")
+        prompt7 = ChatPromptTemplate.from_messages([
+            ("system", "You are an elite institutional analyst creating an EXECUTIVE SUMMARY section."),
+            ("human", f"""Create SECTION 7: EXECUTIVE SUMMARY for {ticker} on {current_date}.
+
+**KEY POINTS TO SYNTHESIZE:**
+- Final Decision: {final_decision}
+- Fundamentals: Strong revenue growth, margins, ROE
+- Sentiment: Bullish news catalysts
+- Technicals: Current setup and key levels
+- Optimization: Position sizing recommendations
+- Risk: VaR, stop-loss levels
+
+**INSTRUCTIONS:**
+1. Synthesize the entire analysis into 1-2 pages
+2. Highlight key investment thesis
+3. State clear recommendation with confidence level
+4. Summarize entry/exit strategy
+5. Note key risks and catalysts
+6. Provide decision-ready summary for executives
+7. Start with: ## SECTION 7: EXECUTIVE SUMMARY
+
+Generate ONLY Section 7 as a concise, actionable executive summary.""")
+        ])
+        section7 = (prompt7 | llm).invoke({}).content
+        sections.append(section7)
+
+        print("   ✅ All 7 sections generated successfully!")
+
+        # Combine all sections
+        analysis_document = "\n\n".join(sections)
         
         # Clean up the document - remove any echoed instructions/requirements
         cleanup_phrases = [

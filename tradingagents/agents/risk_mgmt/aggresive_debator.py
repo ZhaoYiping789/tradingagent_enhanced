@@ -4,6 +4,12 @@ import json
 
 def create_risky_debator(llm):
     def risky_node(state) -> dict:
+        # Escape curly braces to prevent ChatPromptTemplate variable interpretation
+        def escape_braces(text):
+            if isinstance(text, str):
+                return text.replace("{", "{{").replace("}", "}}")
+            return text
+
         risk_debate_state = state["risk_debate_state"]
         history = risk_debate_state.get("history", "")
         risky_history = risk_debate_state.get("risky_history", "")
@@ -11,12 +17,12 @@ def create_risky_debator(llm):
         current_safe_response = risk_debate_state.get("current_safe_response", "")
         current_neutral_response = risk_debate_state.get("current_neutral_response", "")
 
-        market_research_report = state["market_report"]
-        sentiment_report = state["sentiment_report"]
-        news_report = state["news_report"]
-        fundamentals_report = state["fundamentals_report"]
+        market_research_report = escape_braces(state["market_report"])
+        sentiment_report = escape_braces(state["sentiment_report"])
+        news_report = escape_braces(state["news_report"])
+        fundamentals_report = escape_braces(state["fundamentals_report"])
 
-        trader_decision = state["trader_investment_plan"]
+        trader_decision = escape_braces(state["trader_investment_plan"])
 
         prompt = f"""As the Risky Risk Analyst, your role is to actively champion high-reward, high-risk opportunities, emphasizing bold strategies and competitive advantages. When evaluating the trader's decision or plan, focus intently on the potential upside, growth potential, and innovative benefits—even when these come with elevated risk. Use the provided market data and sentiment analysis to strengthen your arguments and challenge the opposing views. Specifically, respond directly to each point made by the conservative and neutral analysts, countering with data-driven rebuttals and persuasive reasoning. Highlight where their caution might miss critical opportunities or where their assumptions may be overly conservative. Here is the trader's decision:
 

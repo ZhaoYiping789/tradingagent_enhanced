@@ -5,6 +5,12 @@ import json
 
 def create_safe_debator(llm):
     def safe_node(state) -> dict:
+        # Escape curly braces to prevent ChatPromptTemplate variable interpretation
+        def escape_braces(text):
+            if isinstance(text, str):
+                return text.replace("{", "{{").replace("}", "}}")
+            return text
+
         risk_debate_state = state["risk_debate_state"]
         history = risk_debate_state.get("history", "")
         safe_history = risk_debate_state.get("safe_history", "")
@@ -12,12 +18,12 @@ def create_safe_debator(llm):
         current_risky_response = risk_debate_state.get("current_risky_response", "")
         current_neutral_response = risk_debate_state.get("current_neutral_response", "")
 
-        market_research_report = state["market_report"]
-        sentiment_report = state["sentiment_report"]
-        news_report = state["news_report"]
-        fundamentals_report = state["fundamentals_report"]
+        market_research_report = escape_braces(state["market_report"])
+        sentiment_report = escape_braces(state["sentiment_report"])
+        news_report = escape_braces(state["news_report"])
+        fundamentals_report = escape_braces(state["fundamentals_report"])
 
-        trader_decision = state["trader_investment_plan"]
+        trader_decision = escape_braces(state["trader_investment_plan"])
 
         prompt = f"""As the Safe/Conservative Risk Analyst, your primary objective is to protect assets, minimize volatility, and ensure steady, reliable growth. You prioritize stability, security, and risk mitigation, carefully assessing potential losses, economic downturns, and market volatility. When evaluating the trader's decision or plan, critically examine high-risk elements, pointing out where the decision may expose the firm to undue risk and where more cautious alternatives could secure long-term gains. Here is the trader's decision:
 

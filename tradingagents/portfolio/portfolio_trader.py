@@ -4,19 +4,57 @@ Integrates optimization scenarios with fundamental, technical, and sentiment ana
 """
 
 from typing import Dict, Any
-from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 import json
+import os
 
 class PortfolioTrader:
     """LLM-based portfolio trader that makes final allocation decisions"""
-    
-    def __init__(self, llm_model: str = "gpt-4o"):
-        self.llm = ChatOpenAI(
-            model=llm_model, 
-            temperature=0.1,
-            base_url="https://api.laozhang.ai/v1"  # Use same endpoint as main system
-        )
+
+    def __init__(self, llm_model: str = None, llm_provider: str = None):
+        """
+        Initialize Portfolio Trader with flexible LLM backend
+
+        Args:
+            llm_model: Model to use (default: uses WatsonX if available, else OpenAI)
+            llm_provider: "watsonx" or "openai" (auto-detected if None)
+        """
+        # Auto-detect provider
+        if llm_provider is None:
+            if os.getenv("WATSONX_APIKEY") or os.getenv("WATSONX_API_KEY"):
+                llm_provider = "watsonx"
+            else:
+                llm_provider = "openai"
+
+        if llm_provider == "watsonx":
+            from langchain_ibm import WatsonxLLM
+
+            watsonx_api_key = os.getenv("WATSONX_APIKEY") or os.getenv("WATSONX_API_KEY")
+            watsonx_project_id = os.getenv("WATSONX_PROJECT_ID")
+            watsonx_url = os.getenv("WATSONX_URL", "https://us-south.ml.cloud.ibm.com")
+
+            model = llm_model or "meta-llama/llama-3-3-70b-instruct"
+
+            self.llm = WatsonxLLM(
+                model_id=model,
+                url=watsonx_url,
+                project_id=watsonx_project_id,
+                apikey=watsonx_api_key,
+                params={
+                    "max_new_tokens": 8192,
+                    "temperature": 0.1,
+                    "top_p": 0.95,
+                    "top_k": 50,
+                }
+            )
+        else:
+            from langchain_openai import ChatOpenAI
+            model = llm_model or "gpt-4o"
+            self.llm = ChatOpenAI(
+                model=model,
+                temperature=0.1,
+                base_url="https://api.laozhang.ai/v1"
+            )
         
     def make_final_allocation(self, aggregated_data: Dict, optimization_scenarios: Dict, market_context: str = "") -> Dict[str, Any]:
         """
@@ -78,9 +116,12 @@ Based on this comprehensive analysis, provide your final allocation decision as 
         try:
             chain = prompt | self.llm
             response = chain.invoke({})
-            
-            # Parse the response
-            content = response.content
+
+            # Parse the response - handle both WatsonX (str) and OpenAI (object with .content)
+            if isinstance(response, str):
+                content = response
+            else:
+                content = response.content
             
             # Extract JSON if present
             if "```json" in content:

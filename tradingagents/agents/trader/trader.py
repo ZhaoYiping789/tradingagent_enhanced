@@ -5,14 +5,20 @@ import json
 
 def create_trader(llm, memory):
     def trader_node(state, name):
+        # Escape curly braces to prevent ChatPromptTemplate variable interpretation
+        def escape_braces(text):
+            if isinstance(text, str):
+                return text.replace("{", "{{").replace("}", "}}")
+            return text
+
         company_name = state["company_of_interest"]
-        investment_plan = state["investment_plan"]
-        market_research_report = state["market_report"]
-        sentiment_report = state["sentiment_report"]
-        news_report = state["news_report"]
-        fundamentals_report = state["fundamentals_report"]
-        quantitative_report = state.get("quantitative_report", "No quantitative analysis")
-        comprehensive_quant_report = state.get("comprehensive_quantitative_report", "")
+        investment_plan = escape_braces(state["investment_plan"])
+        market_research_report = escape_braces(state["market_report"])
+        sentiment_report = escape_braces(state["sentiment_report"])
+        news_report = escape_braces(state["news_report"])
+        fundamentals_report = escape_braces(state["fundamentals_report"])
+        quantitative_report = escape_braces(state.get("quantitative_report", "No quantitative analysis"))
+        comprehensive_quant_report = escape_braces(state.get("comprehensive_quantitative_report", ""))
         optimization_results = state.get("optimization_results", {})
 
         curr_situation = f"{market_research_report}\n\n{sentiment_report}\n\n{news_report}\n\n{fundamentals_report}\n\n{quantitative_report}"

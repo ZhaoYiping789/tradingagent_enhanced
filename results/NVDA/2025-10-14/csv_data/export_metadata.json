@@ -1,0 +1,13 @@
+{
+  "ticker": "NVDA",
+  "export_date": "2025-10-14",
+  "timestamp": "2025-10-15T04:42:45.577868",
+  "exported_files": {
+    "financials": "results/NVDA/2025-10-14/csv_data/financial_metrics.csv",
+    "risk": "results/NVDA/2025-10-14/csv_data/risk_metrics.csv",
+    "optimization": "results/NVDA/2025-10-14/csv_data/optimization_scenarios.csv",
+    "news": "results/NVDA/2025-10-14/csv_data/sentiment_analysis.csv",
+    "summary": "results/NVDA/2025-10-14/csv_data/summary_metrics.csv"
+  },
+  "file_count": 5
+}

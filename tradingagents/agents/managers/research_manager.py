@@ -4,11 +4,17 @@ import json
 
 def create_research_manager(llm, memory):
     def research_manager_node(state) -> dict:
+        # Escape curly braces to prevent ChatPromptTemplate variable interpretation
+        def escape_braces(text):
+            if isinstance(text, str):
+                return text.replace("{", "{{").replace("}", "}}")
+            return text
+
         history = state["investment_debate_state"].get("history", "")
-        market_research_report = state["market_report"]
-        sentiment_report = state["sentiment_report"]
-        news_report = state["news_report"]
-        fundamentals_report = state["fundamentals_report"]
+        market_research_report = escape_braces(state["market_report"])
+        sentiment_report = escape_braces(state["sentiment_report"])
+        news_report = escape_braces(state["news_report"])
+        fundamentals_report = escape_braces(state["fundamentals_report"])
 
         investment_debate_state = state["investment_debate_state"]
 

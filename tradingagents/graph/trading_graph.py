@@ -10,6 +10,13 @@ from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 
+try:
+    from langchain_ibm import ChatWatsonx
+    WATSONX_AVAILABLE = True
+except ImportError:
+    WATSONX_AVAILABLE = False
+    print("Warning: langchain-ibm not installed. WatsonX support disabled.")
+
 from langgraph.prebuilt import ToolNode
 
 from tradingagents.agents import *
@@ -67,6 +74,40 @@ class TradingAgentsGraph:
         elif self.config["llm_provider"].lower() == "google":
             self.deep_thinking_llm = ChatGoogleGenerativeAI(model=self.config["deep_think_llm"])
             self.quick_thinking_llm = ChatGoogleGenerativeAI(model=self.config["quick_think_llm"])
+        elif self.config["llm_provider"].lower() == "watsonx":
+            if not WATSONX_AVAILABLE:
+                raise ImportError(
+                    "langchain-ibm is not installed. Please install it with: "
+                    "uv pip install langchain-ibm ibm-watsonx-ai"
+                )
+
+            # Initialize WatsonX LLMs with required parameters
+            watsonx_params = {
+                "url": os.getenv("WATSONX_URL", self.config.get("watsonx_url", "https://us-south.ml.cloud.ibm.com")),
+                "project_id": os.getenv("WATSONX_PROJECT_ID", self.config.get("watsonx_project_id")),
+            }
+
+            # Use API key authentication
+            api_key = os.getenv("WATSONX_API_KEY", self.config.get("watsonx_api_key"))
+            if api_key:
+                watsonx_params["apikey"] = api_key
+
+            # Model parameters for generation
+            generation_params = {
+                "max_new_tokens": self.config.get("max_tokens", 4096),
+                "temperature": self.config.get("temperature", 0.7),
+            }
+
+            self.deep_thinking_llm = ChatWatsonx(
+                model_id=self.config["deep_think_llm"],
+                params=generation_params,
+                **watsonx_params
+            )
+            self.quick_thinking_llm = ChatWatsonx(
+                model_id=self.config["quick_think_llm"],
+                params=generation_params,
+                **watsonx_params
+            )
         else:
             raise ValueError(f"Unsupported LLM provider: {self.config['llm_provider']}")
         

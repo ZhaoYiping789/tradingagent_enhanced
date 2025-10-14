@@ -7,3 +7,16 @@ eval_results/
 eval_data/
 *.egg-info/
 .env
+
+# WatsonX credentials and sensitive files
+.env.watsonx
+set_watsonx_env.bat
+set_watsonx_env.sh
+*watsonx*.log
+watsonx_env/
+
+# Other log files
+enterprise_output.log
+enterprise_watsonx_output.log
+analysis_output.log
+realtime_output.log

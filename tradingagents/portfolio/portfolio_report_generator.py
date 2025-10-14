@@ -33,12 +33,23 @@ class PortfolioReportGenerator:
         output_path.mkdir(parents=True, exist_ok=True)
         
         # Generate LLM final allocation decision
-        portfolio_trader = PortfolioTrader()
-        final_decision = portfolio_trader.make_final_allocation(
-            aggregated_data=self.aggregated_data,
-            optimization_scenarios=self.optimization_scenarios,
-            market_context=f"Current date: {self.date}, Market conditions: Moderate volatility tech environment"
-        )
+        print("\n🤖 Calling Portfolio Manager LLM for final allocation decision...")
+        try:
+            portfolio_trader = PortfolioTrader(llm_provider="watsonx")
+            final_decision = portfolio_trader.make_final_allocation(
+                aggregated_data=self.aggregated_data,
+                optimization_scenarios=self.optimization_scenarios,
+                market_context=f"Current date: {self.date}, Market conditions: Moderate volatility tech environment"
+            )
+            if final_decision and final_decision.get('final_allocation'):
+                print(f"✅ LLM Portfolio Manager decision received:")
+                for ticker, weight in final_decision['final_allocation'].items():
+                    print(f"   - {ticker}: {weight*100:.2f}%")
+            else:
+                print("⚠️ WARNING: LLM Portfolio Manager did not return allocation")
+        except Exception as e:
+            print(f"❌ ERROR: Portfolio Trader LLM call failed: {e}")
+            final_decision = None
         
         # Generate Markdown report with LLM decision
         md_report = self._create_markdown_report(final_decision)

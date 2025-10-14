@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(set WATSONX_URL=https://us-south.ml.cloud.ibm.com)",
+      "Bash(set WATSONX_APIKEY=1NlP-L5h1DDEZFKkvJ92uTuMFNbkk0pmGJ4lMutJ44w2)",
+      "Bash(set WATSONX_PROJECT_ID=394811a9-3e1c-4b80-8031-3fda71e6dce1)",
+      "Bash(python:*)",
+      "Bash(uv:*)",
+      "Bash(set OPENAI_API_KEY=dummy-key-for-testing)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

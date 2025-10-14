@@ -1,25 +1,75 @@
 import chromadb
 from chromadb.config import Settings
-from openai import OpenAI
-
+import os
 
 class FinancialSituationMemory:
     def __init__(self, name, config):
-        if config["backend_url"] == "http://localhost:11434/v1":
-            self.embedding = "nomic-embed-text"
+        """Initialize memory with support for multiple embedding providers"""
+        self.config = config
+        self.provider = config.get("llm_provider", "openai")
+
+        # Initialize embedding client based on provider
+        if self.provider == "watsonx":
+            self._init_watsonx_embeddings()
         else:
-            self.embedding = "text-embedding-3-small"
-        self.client = OpenAI(base_url=config["backend_url"])
+            self._init_openai_embeddings()
+
         self.chroma_client = chromadb.Client(Settings(allow_reset=True))
         self.situation_collection = self.chroma_client.create_collection(name=name)
 
+    def _init_watsonx_embeddings(self):
+        """Initialize WatsonX embeddings"""
+        try:
+            from langchain_ibm import WatsonxEmbeddings
+
+            self.embedding_model = "ibm/slate-125m-english-rtrvr"  # WatsonX embedding model
+            self.embeddings = WatsonxEmbeddings(
+                model_id=self.embedding_model,
+                url=self.config.get("watsonx_url", os.getenv("WATSONX_URL")),
+                apikey=self.config.get("watsonx_api_key", os.getenv("WATSONX_APIKEY")),
+                project_id=self.config.get("watsonx_project_id", os.getenv("WATSONX_PROJECT_ID")),
+            )
+            self.use_langchain_embeddings = True
+            print(f"[Memory] Using WatsonX embeddings: {self.embedding_model}")
+        except ImportError:
+            print("[Memory] WatsonX embeddings not available, falling back to OpenAI")
+            self._init_openai_embeddings()
+        except Exception as e:
+            print(f"[Memory] WatsonX embeddings initialization failed: {e}, falling back to OpenAI")
+            self._init_openai_embeddings()
+
+    def _init_openai_embeddings(self):
+        """Initialize OpenAI embeddings"""
+        from openai import OpenAI
+
+        if self.config.get("backend_url") == "http://localhost:11434/v1":
+            self.embedding_model = "nomic-embed-text"
+        else:
+            self.embedding_model = "text-embedding-3-small"
+
+        self.client = OpenAI(base_url=self.config.get("backend_url"))
+        self.use_langchain_embeddings = False
+        print(f"[Memory] Using OpenAI embeddings: {self.embedding_model}")
+
     def get_embedding(self, text):
-        """Get OpenAI embedding for a text"""
-        
-        response = self.client.embeddings.create(
-            model=self.embedding, input=text
-        )
-        return response.data[0].embedding
+        """Get embedding for text using configured provider"""
+        if self.use_langchain_embeddings:
+            # Use LangChain embeddings (WatsonX)
+            # Truncate text to avoid exceeding token limit (512 tokens ≈ 384 chars conservatively)
+            # Using 350 chars to have safe margin for the +2 start/end tokens
+            max_chars = 350
+            if len(text) > max_chars:
+                original_len = len(text)
+                text = text[:max_chars]
+                print(f"[Memory] Truncated text from {original_len} to {max_chars} characters for embedding")
+
+            return self.embeddings.embed_query(text)
+        else:
+            # Use OpenAI embeddings
+            response = self.client.embeddings.create(
+                model=self.embedding_model, input=text
+            )
+            return response.data[0].embedding
 
     def add_situations(self, situations_and_advice):
         """Add financial situations and their corresponding advice. Parameter is a list of tuples (situation, rec)"""

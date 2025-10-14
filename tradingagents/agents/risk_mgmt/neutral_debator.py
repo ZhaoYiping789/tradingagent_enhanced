@@ -4,6 +4,12 @@ import json
 
 def create_neutral_debator(llm):
     def neutral_node(state) -> dict:
+        # Escape curly braces to prevent ChatPromptTemplate variable interpretation
+        def escape_braces(text):
+            if isinstance(text, str):
+                return text.replace("{", "{{").replace("}", "}}")
+            return text
+
         risk_debate_state = state["risk_debate_state"]
         history = risk_debate_state.get("history", "")
         neutral_history = risk_debate_state.get("neutral_history", "")
@@ -11,12 +17,12 @@ def create_neutral_debator(llm):
         current_risky_response = risk_debate_state.get("current_risky_response", "")
         current_safe_response = risk_debate_state.get("current_safe_response", "")
 
-        market_research_report = state["market_report"]
-        sentiment_report = state["sentiment_report"]
-        news_report = state["news_report"]
-        fundamentals_report = state["fundamentals_report"]
+        market_research_report = escape_braces(state["market_report"])
+        sentiment_report = escape_braces(state["sentiment_report"])
+        news_report = escape_braces(state["news_report"])
+        fundamentals_report = escape_braces(state["fundamentals_report"])
 
-        trader_decision = state["trader_investment_plan"]
+        trader_decision = escape_braces(state["trader_investment_plan"])
 
         prompt = f"""As the Neutral Risk Analyst, your role is to provide a balanced perspective, weighing both the potential benefits and risks of the trader's decision or plan. You prioritize a well-rounded approach, evaluating the upsides and downsides while factoring in broader market trends, potential economic shifts, and diversification strategies.Here is the trader's decision:
 

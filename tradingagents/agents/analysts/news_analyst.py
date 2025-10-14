@@ -9,7 +9,7 @@ def create_news_analyst(llm, toolkit):
         ticker = state["company_of_interest"]
 
         if toolkit.config["online_tools"]:
-            # Use only working real-time news APIs
+            # Use Google News for comprehensive coverage
             tools = [
                 toolkit.get_google_news,         # ✅ WORKING: Real Google news API
             ]
@@ -19,8 +19,13 @@ def create_news_analyst(llm, toolkit):
 
         system_message = (
             f"You are a financial news analyst specializing in {ticker} and market-moving events. Your task is to gather and analyze the most recent, high-impact news that could affect {ticker}'s stock price and trading decisions. Focus on actionable intelligence rather than general market commentary."
-            + """ CRITICAL REQUIREMENTS:
-            1. **NEWS SELECTION**: From all available news, intelligently select only the 5-10 MOST IMPORTANT news items based on:
+            + """
+            **MANDATORY DATA GATHERING:**
+            You MUST call get_google_news with the ticker symbol to fetch comprehensive news coverage.
+            Make sure to analyze ALL news articles returned - there should be many articles covering different aspects.
+
+            CRITICAL REQUIREMENTS:
+            1. **NEWS SELECTION**: From all available news, intelligently select the 10-15 MOST IMPORTANT news items based on:
                - Timeliness (most recent news gets priority)
                - Market impact potential (explosive/breaking news)
                - Relevance to trading decisions
