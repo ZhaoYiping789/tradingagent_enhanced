@@ -21,7 +21,7 @@ This is the **Interactive Web UI Version** of TradingAgents Enhanced Edition - a
 - 📊 **Real-time Visualization** - See charts and analysis as they're generated
 - 🔄 **Iterative Analysis** - Refine results through follow-up questions
 - 🎯 **Smart Agent Selection** - AI automatically chooses the right analysts
-- 🤖 **Multi-LLM Support** - Works with OpenAI GPT-4 and IBM WatsonX
+- 🤖 **Multi-LLM Support** - Works with IBM WatsonX and OpenAI GPT-4
 - 📈 **Professional Reports** - Download Word/PDF reports
 
 ---
@@ -47,19 +47,7 @@ uv sync
 
 ### Step 2: Set Your API Key
 
-**Option A: Using OpenAI (Recommended for most users)**
-
-```bash
-# Windows
-set OPENAI_API_KEY=your-openai-api-key-here
-
-# Linux/Mac
-export OPENAI_API_KEY="your-openai-api-key-here"
-```
-
-Get your API key from: https://platform.openai.com/api-keys
-
-**Option B: Using IBM WatsonX (Enterprise users)**
+**Option A: Using IBM WatsonX (Enterprise-grade AI)**
 
 ```bash
 # Windows
@@ -72,6 +60,20 @@ export WATSONX_APIKEY="your-watsonx-api-key"
 export WATSONX_PROJECT_ID="your-project-id"
 export WATSONX_URL="https://us-south.ml.cloud.ibm.com"
 ```
+
+Get your credentials from: https://cloud.ibm.com/watsonx
+
+**Option B: Using OpenAI**
+
+```bash
+# Windows
+set OPENAI_API_KEY=your-openai-api-key-here
+
+# Linux/Mac
+export OPENAI_API_KEY="your-openai-api-key-here"
+```
+
+Get your API key from: https://platform.openai.com/api-keys
 
 ### Step 3: Launch the Web UI
 
@@ -236,9 +238,30 @@ graph = TradingAgentsGraph(
 )
 ```
 
-### Using OpenAI Instead of WatsonX
+### LLM Configuration
 
-Change configuration in `flask_chat_app.py` (around line 34-47):
+**Default Configuration (WatsonX):**
+
+The system is pre-configured for IBM WatsonX in `flask_chat_app.py` (around line 34-47):
+
+```python
+# WatsonX Configuration (Default)
+WATSONX_CONFIG = {
+    "llm_provider": "watsonx",
+    "watsonx_url": "https://us-south.ml.cloud.ibm.com",
+    "watsonx_api_key": os.getenv("WATSONX_APIKEY"),
+    "watsonx_project_id": os.getenv("WATSONX_PROJECT_ID"),
+    "deep_think_llm": "meta-llama/llama-3-3-70b-instruct",  # Complex analysis
+    "quick_think_llm": "meta-llama/llama-3-3-70b-instruct",  # Fast operations
+    "max_debate_rounds": 2,
+    "enterprise_mode": True,
+    "online_tools": True,
+}
+```
+
+**Alternative: Using OpenAI Instead:**
+
+To switch to OpenAI, change configuration in `flask_chat_app.py`:
 
 ```python
 # OpenAI Configuration
@@ -250,6 +273,13 @@ OPENAI_CONFIG = {
     "enterprise_mode": True,
     "online_tools": True,
 }
+
+# Then update line 79 to use OPENAI_CONFIG:
+graph = TradingAgentsGraph(
+    selected_analysts=[...],
+    debug=False,
+    config=OPENAI_CONFIG  # Changed from WATSONX_CONFIG
+)
 ```
 
 ### Performance Tuning
@@ -464,20 +494,22 @@ All analysis results are automatically saved:
 - ✅ No telemetry or tracking
 - ✅ No data sent to third parties except LLM APIs
 
-### Using OpenAI
+### Using IBM WatsonX (Default)
+
+- **Enterprise-grade security and compliance**
+- Data stays within IBM infrastructure
+- GDPR, SOC 2, HIPAA ready
+- Full audit trails available
+- Custom deployment options
+- On-premise deployment available
+- AI governance and model monitoring
+
+### Using OpenAI (Alternative)
 
 - Data sent to OpenAI per their [privacy policy](https://openai.com/policies/privacy-policy)
 - API calls can be opted out of training data
 - Secure HTTPS communication
 - No data persistence after API call (with proper settings)
-
-### Using WatsonX
-
-- Enterprise-grade security and compliance
-- Data stays within IBM infrastructure
-- GDPR, SOC 2, HIPAA ready
-- Full audit trails available
-- Custom deployment options
 
 ---
 
@@ -554,7 +586,7 @@ MIT License - See [LICENSE](LICENSE) file for details.
 ## 🙏 Acknowledgments
 
 - Based on [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents.git) architecture
-- Powered by OpenAI GPT-4 and IBM WatsonX
+- Powered by IBM WatsonX and OpenAI GPT-4
 - Built with LangChain, Flask, and LangGraph
 - Community contributions appreciated
 
@@ -564,7 +596,7 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ### Current Features
 - ✅ Interactive Flask web chat interface
-- ✅ Multi-LLM support (OpenAI + WatsonX)
+- ✅ Multi-LLM support (WatsonX + OpenAI)
 - ✅ Real-time analysis with progress updates
 - ✅ Portfolio optimization with 6+ strategies
 - ✅ Professional report generation
