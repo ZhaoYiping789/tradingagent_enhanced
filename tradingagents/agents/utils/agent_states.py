@@ -53,6 +53,9 @@ class AgentState(MessagesState):
 
     sender: Annotated[str, "Agent that sent this message"]
 
+    # user preferences (for interactive mode)
+    user_preferences: Annotated[Optional[dict], "User's analysis preferences and requirements"]
+
     # research step
     market_report: Annotated[str, "Report from the Market Analyst"]
     sentiment_report: Annotated[str, "Report from the Social Media Analyst"]
@@ -64,6 +67,8 @@ class AgentState(MessagesState):
     portfolio_report: Annotated[str, "Report from the Portfolio Analyst"]
     optimization_results: Annotated[dict, "Multi-scenario optimization results with gamma values"]
     comprehensive_quantitative_report: Annotated[str, "Comprehensive quantitative analysis report"]
+    enterprise_strategy_report: Annotated[str, "Report from the Enterprise Strategy Analyst"]
+    visualizer_report: Annotated[str, "Report from the Visualizer Analyst"]
 
     # researcher team discussion step
     investment_debate_state: Annotated[
@@ -78,7 +83,7 @@ class AgentState(MessagesState):
         RiskDebateState, "Current state of the debate on evaluating risk"
     ]
     final_trade_decision: Annotated[str, "Final decision made by the Risk Analysts"]
-    
+
     # document generation
     analysis_document: Annotated[str, "Comprehensive analysis document"]
     document_path: Annotated[str, "Path to saved analysis document"]

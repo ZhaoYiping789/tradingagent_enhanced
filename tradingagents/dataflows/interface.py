@@ -293,7 +293,34 @@ def get_google_news(
     before = start_date - relativedelta(days=look_back_days)
     before = before.strftime("%Y-%m-%d")
 
-    news_results = getNewsData(query, before, curr_date)
+    # Enhanced news search: include company news, political/regulatory news, and internal events
+    # Extract company ticker/name from query
+    company_term = query.split('+')[0] if '+' in query else query
+
+    # Search 1: Direct company news (20 articles)
+    news_results = getNewsData(query, before, curr_date, max_results=20)
+
+    # Search 2: Company + policy/regulation/politics (10 articles)
+    political_query = f"{company_term}+policy+OR+regulation+OR+government+OR+politics"
+    political_news = getNewsData(political_query, before, curr_date, max_results=10)
+
+    # Search 3: Company internal activities (10 articles)
+    internal_query = f"{company_term}+CEO+OR+executive+OR+management+OR+hiring+OR+restructuring+OR+acquisition"
+    internal_news = getNewsData(internal_query, before, curr_date, max_results=10)
+
+    # Merge results and remove duplicates based on URL
+    seen_urls = set()
+    for news in political_news + internal_news:
+        if news['link'] not in seen_urls:
+            news_results.append(news)
+            seen_urls.add(news['link'])
+
+    # Collect statistics
+    total_news = len(news_results)
+    sources = {}
+    for news in news_results:
+        source = news['source']
+        sources[source] = sources.get(source, 0) + 1
 
     news_str = ""
 
@@ -303,9 +330,46 @@ def get_google_news(
         )
 
     if len(news_results) == 0:
-        return ""
+        # Return a meaningful fallback message instead of empty string
+        ticker_symbol = query.split('+')[0] if '+' in query else query
+        return (
+            f"## Google News Search Results for '{query.replace('+', ' ')}' (from {before} to {curr_date}):\n\n"
+            f"**⚠️ No news articles found for the specified date range.**\n\n"
+            f"**Possible reasons:**\n"
+            f"- The date range may be in the future or too recent for Google News indexing\n"
+            f"- Google News web scraping may be temporarily blocked or rate-limited\n"
+            f"- The company may not have significant news coverage in this period\n\n"
+            f"**Recommendation for manual news check:**\n"
+            f"- Yahoo Finance: https://finance.yahoo.com/quote/{ticker_symbol}/news\n"
+            f"- Google News: https://www.google.com/search?q={query}&tbm=nws\n"
+            f"- Reuters: https://www.reuters.com/search/news?blob={ticker_symbol}\n\n"
+            f"**Analysis Impact**: Without current news data, this analysis will rely on:\n"
+            f"- Technical indicators (market trends, momentum, volatility)\n"
+            f"- Fundamental metrics (financials, ratios, valuation)\n"
+            f"- Historical patterns and statistical analysis\n\n"
+            f"For time-sensitive trading decisions, please manually verify recent news before acting on this analysis."
+        )
 
-    return f"## {query} Google News, from {before} to {curr_date}:\n\n{news_str}"
+    # Create statistics summary with enhanced search categories
+    sources_list = ", ".join([f"{source} ({count})" for source, count in sorted(sources.items(), key=lambda x: -x[1])[:10]])  # Top 10 sources
+    num_sources = len(sources)
+
+    stats_summary = (
+        f"## Enhanced Google News Search Results for '{query.replace('+', ' ')}' (from {before} to {curr_date}):\n\n"
+        f"**📊 News Coverage Statistics:**\n"
+        f"- **Total Articles Retrieved**: {total_news} articles\n"
+        f"- **Number of Different Sources**: {num_sources}\n"
+        f"- **Top News Sources**: {sources_list}\n"
+        f"- **Date Range**: {look_back_days}-day period ({before} to {curr_date})\n"
+        f"- **Search Categories**: \n"
+        f"  * Direct Company News: ~{len(news_results[:20])} articles\n"
+        f"  * Political/Regulatory News: ~{len(political_news)} articles\n"
+        f"  * Internal Activities (CEO/Management/M&A): ~{len(internal_news)} articles\n\n"
+        f"**Note**: This enhanced search includes not only stock analysis news, but also relevant political events, regulatory changes, and company internal activities that may impact the stock.\n\n"
+        f"---\n\n"
+    )
+
+    return stats_summary + news_str
 
 
 def get_reddit_global_news(

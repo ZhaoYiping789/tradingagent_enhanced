@@ -9,6 +9,7 @@ from tradingagents.agents import *
 from tradingagents.agents.analysts.comprehensive_quantitative_analyst import create_comprehensive_quantitative_analyst
 from tradingagents.agents.analysts.multi_scenario_optimizer import create_multi_scenario_optimizer
 from tradingagents.agents.analysts.portfolio_analyst import create_portfolio_analyst
+from tradingagents.agents.analysts.visualizer_analyst import create_visualizer_analyst
 from tradingagents.agents.generators.enhanced_quantitative_document_generator import create_enhanced_quantitative_document_generator
 from tradingagents.agents.utils.agent_states import AgentState
 from tradingagents.agents.utils.agent_utils import Toolkit
@@ -57,6 +58,9 @@ class GraphSetup:
                 - "fundamentals": Fundamentals analyst
                 - "quantitative": Quantitative analyst with ML forecasting
                 - "portfolio": Portfolio comparative analyst
+                - "comprehensive_quantitative": Multi-scenario optimizer
+                - "enterprise_strategy": Enterprise strategy analyst
+                - "visualizer": Interactive visualizer analyst
         """
         if len(selected_analysts) == 0:
             raise ValueError("Trading Agents Graph Setup Error: no analysts selected!")
@@ -122,6 +126,13 @@ class GraphSetup:
             )
             delete_nodes["enterprise_strategy"] = create_msg_delete()
             tool_nodes["enterprise_strategy"] = self.tool_nodes.get("enterprise_strategy", self.tool_nodes["market"])
+
+        if "visualizer" in selected_analysts:
+            analyst_nodes["visualizer"] = create_visualizer_analyst(
+                self.quick_thinking_llm, self.toolkit
+            )
+            delete_nodes["visualizer"] = create_msg_delete()
+            tool_nodes["visualizer"] = self.tool_nodes.get("visualizer", self.tool_nodes["market"])
 
         # Create researcher and manager nodes
         bull_researcher_node = create_bull_researcher(

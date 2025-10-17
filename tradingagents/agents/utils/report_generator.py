@@ -139,8 +139,13 @@ def generate_comprehensive_word_report(
     
     # 添加图表
     if chart_paths:
-        for chart_name, chart_path in chart_paths.items():
-            generator.add_image(chart_path, f"{chart_name}图表", width=6)
+        # Handle both dict and list formats for chart_paths
+        if isinstance(chart_paths, dict):
+            for chart_name, chart_path in chart_paths.items():
+                generator.add_image(chart_path, f"{chart_name}图表", width=6)
+        elif isinstance(chart_paths, (list, tuple)):
+            for idx, chart_path in enumerate(chart_paths, 1):
+                generator.add_image(chart_path, f"Technical Analysis Chart {idx}", width=6)
     
     # 添加新闻分析
     if news_report:

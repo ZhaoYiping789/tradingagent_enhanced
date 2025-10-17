@@ -172,7 +172,7 @@ class Toolkit:
         curr_date: Annotated[
             str, "The current trading date you are trading on, YYYY-mm-dd"
         ],
-        look_back_days: Annotated[int, "how many days to look back"] = 30,
+        look_back_days: Annotated[int, "how many days to look back"] = 21,  # CHANGED: 21 days for faster loading
     ) -> str:
         """
         Retrieve stock stats indicators for a given ticker symbol and indicator.
@@ -201,7 +201,7 @@ class Toolkit:
         curr_date: Annotated[
             str, "The current trading date you are trading on, YYYY-mm-dd"
         ],
-        look_back_days: Annotated[int, "how many days to look back"] = 30,
+        look_back_days: Annotated[int, "how many days to look back"] = 21,  # CHANGED: 21 days for faster loading
     ) -> str:
         """
         Retrieve stock stats indicators for a given ticker symbol and indicator.

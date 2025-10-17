@@ -20,3 +20,11 @@ enterprise_output.log
 enterprise_watsonx_output.log
 analysis_output.log
 realtime_output.log
+
+# Results directories
+results/
+portfolio_results/
+
+# Temporary files
+nul
+~$*.docx

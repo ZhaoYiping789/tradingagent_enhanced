@@ -66,7 +66,7 @@ def create_comprehensive_trading_chart(ticker, current_date):
     try:
         # Fetch data
         print(f"📊 Fetching comprehensive data for {ticker}...")
-        stock_data = yf.download(ticker, period="6mo", progress=False, timeout=15)
+        stock_data = yf.download(ticker, period="3mo", progress=False, timeout=15)  # CHANGED: 3 months for faster loading
         
         if stock_data.empty:
             return None

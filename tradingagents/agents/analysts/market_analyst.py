@@ -22,46 +22,71 @@ def create_market_analyst(llm, toolkit):
             ]
 
         system_message = (
-            """You are a trading assistant tasked with performing COMPREHENSIVE technical analysis. You MUST analyze ALL of the following REQUIRED indicators to provide a complete picture:
+            """You are a technical analyst specializing in comprehensive market analysis. Your report MUST include BOTH detailed text analysis AND data tables.
 
-**REQUIRED INDICATORS (You MUST call ALL of these):**
+**REQUIRED INDICATORS (Call ALL 12):**
+Moving Averages: close_50_sma, close_200_sma, close_10_ema
+MACD: macd, macds, macdh (ALL THREE)
+Momentum: rsi
+Volatility: boll, boll_ub, boll_lb, atr
+Volume: vwma
 
-Moving Averages (REQUIRED):
-- close_50_sma: 50 SMA - Medium-term trend indicator for identifying trend direction and support/resistance
-- close_200_sma: 200 SMA - Long-term trend benchmark for confirming overall market trend and golden/death cross setups
-- close_10_ema: 10 EMA - Short-term momentum indicator for capturing quick shifts and entry points
+**WORKFLOW:**
+1. First call get_YFin_data to get price data
+2. Then call get_stockstats_indicators_report for each of the 12 indicators above
+3. AFTER you receive all indicator values, write your comprehensive analysis report
 
-MACD Related (REQUIRED - ALL THREE):
-- macd: MACD Line - Momentum via EMA differences. CRITICAL for identifying trend changes and divergence
-- macds: MACD Signal Line - Smoothing of MACD. CRITICAL for crossover signals
-- macdh: MACD Histogram - Gap between MACD and signal. CRITICAL for visualizing momentum strength
+**REPORT STRUCTURE (CRITICAL - Include ALL sections with detailed text analysis):**
 
-Momentum Indicators (REQUIRED):
-- rsi: RSI - Measures overbought/oversold conditions (70/30 thresholds) and divergence for reversals
+## Technical Overview
+Write 2-3 sentences summarizing the overall technical picture and current market phase.
 
-Volatility Indicators (REQUIRED):
-- boll: Bollinger Middle Band - 20 SMA baseline for price movement
-- boll_ub: Bollinger Upper Band - 2 std dev above, signals overbought conditions and breakout zones
-- boll_lb: Bollinger Lower Band - 2 std dev below, indicates oversold conditions
-- atr: ATR - Measures volatility for setting stop-loss levels and position sizing
+## Trend Analysis (Moving Averages)
+- Present 50 SMA, 200 SMA, 10 EMA values
+- Write 3-4 sentences analyzing:
+  * Current price position relative to moving averages
+  * Golden cross / death cross signals
+  * Support and resistance levels
+  * Short-term vs long-term trend alignment
 
-Volume-Based Indicators (REQUIRED):
-- vwma: VWMA - Volume-weighted moving average to confirm trends with volume data
+## Momentum Analysis (MACD & RSI)
+- Present MACD, MACD Signal, MACD Histogram, RSI values
+- Write 3-4 sentences analyzing:
+  * MACD crossover signals and histogram direction
+  * RSI overbought/oversold conditions (>70 overbought, <30 oversold)
+  * Divergence patterns if present
+  * Momentum strength and direction
 
-**CRITICAL INSTRUCTIONS:**
-1. First call get_YFin_data to retrieve the CSV data
-2. Then call get_stockstats_indicators_report for EACH of the 12 indicators listed above
-3. Do NOT skip any indicators - they are ALL required for comprehensive analysis
-4. After gathering all indicators, write a detailed report analyzing:
-   - Trend analysis (using SMAs and EMAs)
-   - Momentum analysis (using MACD, RSI)
-   - Volatility analysis (using Bollinger Bands, ATR)
-   - Volume confirmation (using VWMA)
-5. Provide specific trading signals based on indicator crossovers, divergences, and levels
-6. Include a comprehensive Markdown table summarizing all key indicators and their signals
+## Volatility Analysis (Bollinger Bands & ATR)
+- Present Bollinger Upper, Middle, Lower bands and ATR value
+- Write 3-4 sentences analyzing:
+  * Current price position within bands (near upper = overbought, near lower = oversold)
+  * Band squeeze or expansion indicating volatility changes
+  * ATR level for position sizing and stop-loss recommendations
+  * Breakout potential
 
-When you tool call, use the EXACT indicator names as listed above. Write a very detailed and nuanced report with specific insights that help traders make informed decisions."""
-            + """ **LANGUAGE REQUIREMENT**: Write EVERYTHING in English only. No Chinese text. Make sure to append a Markdown table at the end of the report to organize key points in the report, organized and easy to read."""
+## Volume Confirmation
+- Present VWMA value
+- Write 2-3 sentences analyzing:
+  * Price vs VWMA positioning
+  * Volume-weighted trend strength
+  * Institutional participation signals
+
+## Trading Recommendation
+Write 3-4 sentences with actionable insights:
+- Bullish/Bearish/Neutral overall assessment
+- Specific entry/exit levels based on indicators
+- Risk management using ATR
+- Key levels to watch
+
+## Summary Table
+Create a markdown table with all 12 indicators and their signals (Bullish/Bearish/Neutral).
+
+**CRITICAL REQUIREMENTS:**
+- DO NOT just list indicator values without analysis
+- Each section MUST have 2-4 sentences of detailed text analysis explaining what the indicators mean
+- Provide specific trading insights, not generic descriptions
+- Write in English only, no Chinese text"""
         )
 
         prompt = ChatPromptTemplate.from_messages(
@@ -88,13 +113,34 @@ When you tool call, use the EXACT indicator names as listed above. Write a very 
 
         chain = prompt | llm.bind_tools(tools)
 
-        result = chain.invoke(state["messages"])
+        # Add retry logic for WatsonX connection issues
+        max_retries = 3
+        retry_count = 0
+        result = None
+
+        while retry_count < max_retries:
+            try:
+                result = chain.invoke(state["messages"])
+                break  # Success, exit retry loop
+            except Exception as e:
+                retry_count += 1
+                error_msg = str(e)
+                if "Server disconnected" in error_msg or "502 Bad Gateway" in error_msg or "RemoteProtocolError" in error_msg:
+                    if retry_count < max_retries:
+                        print(f"[RETRY] WatsonX connection error (attempt {retry_count}/{max_retries}), retrying in 3 seconds...", flush=True)
+                        time.sleep(3)
+                    else:
+                        print(f"[ERROR] WatsonX connection failed after {max_retries} attempts", flush=True)
+                        raise
+                else:
+                    # Other errors, don't retry
+                    raise
 
         report = ""
 
         if len(result.tool_calls) == 0:
             report = result.content
-       
+
         return {
             "messages": [result],
             "market_report": report,
